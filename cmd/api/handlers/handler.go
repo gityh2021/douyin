@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"douyin/pkg/errno"
+	"douyin/v1/pkg/errno"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
