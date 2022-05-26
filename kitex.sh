@@ -1,1 +1,0 @@
-kitex -module douyin -service video ./idl/video.thrift

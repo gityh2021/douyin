@@ -1,5 +1,5 @@
 package rpc
 
-func InitRpc() {
-	initVideoRpc()
+func InitRPC() {
+	initUserRpc()
 }
