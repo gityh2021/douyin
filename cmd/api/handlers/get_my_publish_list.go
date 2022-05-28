@@ -9,8 +9,8 @@ import (
 )
 
 type PublishParam struct {
-	token  string `json:"token"`
-	userId int64  `json:"user_id"`
+	Token  string `json:"token"`
+	UserId int64  `json:"user_id"`
 }
 
 func GetMyPublishVideoList(c *gin.Context) {
