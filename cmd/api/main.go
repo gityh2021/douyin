@@ -9,7 +9,6 @@ import (
 	"github.com/Baojiazhong/dousheng-ubuntu/cmd/api/rpc"
 	"github.com/Baojiazhong/dousheng-ubuntu/kitex_gen/userdemo"
 	"github.com/Baojiazhong/dousheng-ubuntu/pkg/constants"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/errno"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/gin-gonic/gin"
@@ -19,12 +18,12 @@ func Init() {
 	rpc.InitRPC()
 }
 
-var authMiddleware *jwt.GinJWTMiddleware
+// var authMiddleware *jwt.GinJWTMiddleware
 
 func main() {
 	Init()
 	r := gin.New()
-	authMiddleware, _ = jwt.New(&jwt.GinJWTMiddleware{
+	authMiddleware, _ := jwt.New(&jwt.GinJWTMiddleware{
 		Key:        []byte(constants.SecretKey),
 		Timeout:    time.Hour,
 		MaxRefresh: time.Hour,
@@ -69,7 +68,7 @@ func main() {
 	v1 := r.Group("/douyin")
 	user1 := v1.Group("/user")
 	user1.POST("/login/", authMiddleware.LoginHandler)
-	user1.POST("/register/", Register)
+	user1.POST("/register/", handlers.Register, authMiddleware.LoginHandler)// 注册后自动登录
 	// ----------------------------------------------
 	user1.Use(authMiddleware.MiddlewareFunc())
 	user1.GET("/", handlers.GetUserInfo)
@@ -85,24 +84,24 @@ func main() {
 	}
 }
 
-func Register(c *gin.Context) {
-	var registerVar handlers.UserParam
-	registerVar.UserName = c.Query("username")
-	registerVar.PassWord = c.Query("password")
+// func Register(c *gin.Context) {
+// 	var registerVar handlers.UserParam
+// 	registerVar.UserName = c.Query("username")
+// 	registerVar.PassWord = c.Query("password")
 
-	if len(registerVar.UserName) == 0 || len(registerVar.PassWord) == 0 {
-		handlers.SendResponse(c, errno.ParamErr, nil)
-		return
-	}
-	// kong context
-	err := rpc.CreateUser(context.Background(), &userdemo.CreateUserRequest{
-		Username: registerVar.UserName,
-		Password: registerVar.PassWord,
-	})
-	if err != nil {
-		handlers.SendResponse(c, errno.ConvertErr(err), nil)
-		return
-	}
-	// auto login
-	authMiddleware.LoginHandler(c)
-}
+// 	if len(registerVar.UserName) == 0 || len(registerVar.PassWord) == 0 {
+// 		handlers.SendResponse(c, errno.ParamErr, nil)
+// 		return
+// 	}
+// 	// kong context
+// 	err := rpc.CreateUser(context.Background(), &userdemo.CreateUserRequest{
+// 		Username: registerVar.UserName,
+// 		Password: registerVar.PassWord,
+// 	})
+// 	if err != nil {
+// 		handlers.SendResponse(c, errno.ConvertErr(err), nil)
+// 		return
+// 	}
+// 	// auto login
+// 	authMiddleware.LoginHandler(c)
+// }
