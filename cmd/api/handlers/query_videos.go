@@ -5,7 +5,6 @@ import (
 	"douyin/v1/cmd/api/rpc"
 	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/errno"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -19,7 +18,7 @@ func GetMyPublishVideoList(c *gin.Context) {
 	// todo 根据token解析出userId
 	claims := jwt.ExtractClaims(c)
 	userId := int64(claims[constants.IdentityKey].(float64))
-	fmt.Printf("query video,,,,,userId: %v\n", userId)
+	// fmt.Printf("query video,,,,,userId: %v\n", userId)
 
 	// if token == "" || userIdStr == "" {
 	// 	SendQueryByUserIdResponse(c, errno.ParamErr, nil)

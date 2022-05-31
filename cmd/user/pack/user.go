@@ -11,7 +11,7 @@ func User(u *db.User, IsFollow bool) *user.User {
 		return nil
 	}
 
-	return &user.User{UserId: u.ID, Username: u.UserName, FollowCount: u.FollowCount, FollowerCount: u.FollowerCount, IsFollow: IsFollow}
+	return &user.User{Id: u.ID, Name: u.UserName, FollowCount: u.FollowCount, FollowerCount: u.FollowerCount, IsFollow: IsFollow}
 }
 
 // Users pack list of user info
