@@ -1,4 +1,4 @@
-module github.com/Baojiazhong/dousheng-ubuntu
+module douyin/v1
 
 go 1.17
 
@@ -13,6 +13,7 @@ require (
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	gorm.io/driver/mysql v1.3.3
 	gorm.io/gorm v1.23.5
+	gorm.io/plugin/opentracing v0.0.0-20211220013347-7d2b2af23560
 )
 
 require (
@@ -38,6 +39,7 @@ require (
 	github.com/mattn/go-isatty v0.0.12 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/tidwall/gjson v1.12.1 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect

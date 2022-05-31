@@ -3,9 +3,10 @@ package handlers
 import (
 	"context"
 
-	"github.com/Baojiazhong/dousheng-ubuntu/cmd/api/rpc"
-	"github.com/Baojiazhong/dousheng-ubuntu/kitex_gen/userdemo"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/errno"
+	"douyin/v1/cmd/api/rpc"
+	"douyin/v1/kitex_gen/user"
+	"douyin/v1/pkg/errno"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,7 +20,7 @@ func Register(c *gin.Context) {
 		return
 	}
 	// kong context
-	err := rpc.CreateUser(context.Background(), &userdemo.CreateUserRequest{
+	err := rpc.CreateUser(context.Background(), &user.CreateUserRequest{
 		Username: registerVar.UserName,
 		Password: registerVar.PassWord,
 	})

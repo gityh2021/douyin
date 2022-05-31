@@ -1,6 +1,6 @@
 package dal
 
-import "github.com/Baojiazhong/dousheng-ubuntu/cmd/user/dal/db"
+import "douyin/v1/cmd/user/dal/db"
 
 // Init init dal
 func Init() {

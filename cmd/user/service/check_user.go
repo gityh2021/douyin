@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Baojiazhong/dousheng-ubuntu/cmd/user/dal/db"
-	"github.com/Baojiazhong/dousheng-ubuntu/kitex_gen/userdemo"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/errno"
+	"douyin/v1/cmd/user/dal/db"
+	"douyin/v1/kitex_gen/user"
+	"douyin/v1/pkg/errno"
 )
 
 type CheckUserService struct {
@@ -23,7 +23,7 @@ func NewCheckUserService(ctx context.Context) *CheckUserService {
 }
 
 // CheckUser check user info
-func (s *CheckUserService) CheckUser(req *userdemo.CheckUserRequest) (int64, error) {
+func (s *CheckUserService) CheckUser(req *user.CheckUserRequest) (int64, error) {
 	h := md5.New()
 	if _, err := io.WriteString(h, req.Password); err != nil {
 		return 0, err

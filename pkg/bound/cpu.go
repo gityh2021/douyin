@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/constants"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/errno"
+	"douyin/v1/pkg/constants"
+	"douyin/v1/pkg/errno"
+
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/remote"
 	"github.com/shirou/gopsutil/cpu"

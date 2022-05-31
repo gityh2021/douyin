@@ -1,4 +1,4 @@
-namespace go userdemo
+namespace go user
 
 struct BaseResp {
     1:i32 status_code

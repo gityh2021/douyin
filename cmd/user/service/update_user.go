@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/Baojiazhong/dousheng-ubuntu/cmd/user/dal/db"
-	"github.com/Baojiazhong/dousheng-ubuntu/kitex_gen/userdemo"
+	"douyin/v1/cmd/user/dal/db"
+	"douyin/v1/kitex_gen/user"
 )
 
 type UpdateUserService struct {
@@ -16,7 +16,7 @@ func NewUpdateUserService(ctx context.Context) *UpdateUserService {
 	return &UpdateUserService{ctx: ctx}
 }
 
-func (s *UpdateUserService) UpdateUser(req *userdemo.UpdateUserRequest) error {
+func (s *UpdateUserService) UpdateUser(req *user.UpdateUserRequest) error {
 	err := db.UpdateUser(s.ctx, req)
 	return err
 }

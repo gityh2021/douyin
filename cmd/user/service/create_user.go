@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Baojiazhong/dousheng-ubuntu/cmd/user/dal/db"
-	"github.com/Baojiazhong/dousheng-ubuntu/kitex_gen/userdemo"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/errno"
+	"douyin/v1/cmd/user/dal/db"
+	"douyin/v1/kitex_gen/user"
+	"douyin/v1/pkg/errno"
 )
 
 type CreateUserService struct {
@@ -21,7 +21,7 @@ func NewCreateUserService(ctx context.Context) *CreateUserService {
 }
 
 // CreateUser create user info.
-func (s *CreateUserService) CreateUser(req *userdemo.CreateUserRequest) error {
+func (s *CreateUserService) CreateUser(req *user.CreateUserRequest) error {
 	users, err := db.QueryUser(s.ctx, req.Username)
 	if err != nil {
 		return err

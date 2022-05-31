@@ -3,11 +3,12 @@ package main
 import (
 	"net"
 
-	"github.com/Baojiazhong/dousheng-ubuntu/cmd/user/dal"
-	user "github.com/Baojiazhong/dousheng-ubuntu/kitex_gen/userdemo/userservice"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/bound"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/constants"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/middleware"
+	"douyin/v1/cmd/user/dal"
+	user "douyin/v1/kitex_gen/user/userservice"
+	"douyin/v1/pkg/bound"
+	"douyin/v1/pkg/constants"
+	"douyin/v1/pkg/middleware"
+
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"

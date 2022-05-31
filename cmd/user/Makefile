@@ -1,2 +1,2 @@
 server:
-	kitex -I ../../idl/ -service  demouser ../../idl/user.thrift
+	kitex -I ../../idl/ -service  user ../../idl/user.thrift

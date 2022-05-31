@@ -1,22 +1,22 @@
 package pack
 
 import (
-	"github.com/Baojiazhong/dousheng-ubuntu/cmd/user/dal/db"
-	"github.com/Baojiazhong/dousheng-ubuntu/kitex_gen/userdemo"
+	"douyin/v1/cmd/user/dal/db"
+	"douyin/v1/kitex_gen/user"
 )
 
 // User pack user info
-func User(u *db.User, IsFollow bool) *userdemo.User {
+func User(u *db.User, IsFollow bool) *user.User {
 	if u == nil {
 		return nil
 	}
 
-	return &userdemo.User{UserId: u.ID, Username: u.UserName, FollowCount: u.FollowCount, FollowerCount: u.FollowerCount, IsFollow: IsFollow}
+	return &user.User{UserId: u.ID, Username: u.UserName, FollowCount: u.FollowCount, FollowerCount: u.FollowerCount, IsFollow: IsFollow}
 }
 
 // Users pack list of user info
-// func Users(us []*db.User, IsFollow bool) []*userdemo.User {
-// 	users := make([]*userdemo.User, 0)
+// func Users(us []*db.User, IsFollow bool) []*user.User {
+// 	users := make([]*user.User, 0)
 // 	for _, u := range us {
 // 		if user2 := User(u, IsFollow); user2 != nil {
 // 			users = append(users, user2)
@@ -25,8 +25,8 @@ func User(u *db.User, IsFollow bool) *userdemo.User {
 // 	return users
 // }
 
-func Users(us []*db.User, IsFollowList []int64) []*userdemo.User {
-	users := make([]*userdemo.User, 0)
+func Users(us []*db.User, IsFollowList []int64) []*user.User {
+	users := make([]*user.User, 0)
 	for i, u := range us {
 		if IsFollowList[i] > 0 { // == 1
 			if user2 := User(u, true); user2 != nil {

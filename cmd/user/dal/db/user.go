@@ -1,9 +1,10 @@
 package db
 
 import (
-	"github.com/Baojiazhong/dousheng-ubuntu/kitex_gen/userdemo"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/constants"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/errno"
+	"douyin/v1/kitex_gen/user"
+	"douyin/v1/pkg/constants"
+	"douyin/v1/pkg/errno"
+
 	"gorm.io/gorm"
 
 	"context"
@@ -59,7 +60,7 @@ func QueryUserById(ctx context.Context, userId int64) (User, error) {
 }
 
 // MGetUsers multiple get list of user info
-func MGetUsers(ctx context.Context, req *userdemo.MGetUserRequest) ([]*User, error) {
+func MGetUsers(ctx context.Context, req *user.MGetUserRequest) ([]*User, error) {
 	res := make([]*User, 0)
 	if req.UserId < 1 || req.ActionType < constants.QueryUserInfo || req.ActionType > constants.QueryFollowerList {
 		return nil, errno.ParamErr
@@ -98,7 +99,7 @@ func MGetUsers(ctx context.Context, req *userdemo.MGetUserRequest) ([]*User, err
 	}
 }
 
-func UpdateUser(ctx context.Context, req *userdemo.UpdateUserRequest) error {
+func UpdateUser(ctx context.Context, req *user.UpdateUserRequest) error {
 	// step 1: query table follower
 	err := DealWithFollowRelation(ctx, req)
 	if err != nil {

@@ -4,11 +4,12 @@ import (
 	"context"
 	"time"
 
-	"github.com/Baojiazhong/dousheng-ubuntu/kitex_gen/userdemo"
-	"github.com/Baojiazhong/dousheng-ubuntu/kitex_gen/userdemo/userservice"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/constants"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/errno"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/middleware"
+	"douyin/v1/kitex_gen/user"
+	"douyin/v1/kitex_gen/user/userservice"
+	"douyin/v1/pkg/constants"
+	"douyin/v1/pkg/errno"
+	"douyin/v1/pkg/middleware"
+
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
@@ -39,7 +40,7 @@ func initUserRpc() {
 }
 
 // CreateUser create user info
-func CreateUser(ctx context.Context, req *userdemo.CreateUserRequest) error {
+func CreateUser(ctx context.Context, req *user.CreateUserRequest) error {
 	resp, err := userClient.CreateUser(ctx, req)
 	if err != nil {
 		return err
@@ -51,7 +52,7 @@ func CreateUser(ctx context.Context, req *userdemo.CreateUserRequest) error {
 }
 
 // CheckUser check user info
-func CheckUser(ctx context.Context, req *userdemo.CheckUserRequest) (int64, error) {
+func CheckUser(ctx context.Context, req *user.CheckUserRequest) (int64, error) {
 	resp, err := userClient.CheckUser(ctx, req)
 	if err != nil {
 		return 0, err
@@ -63,7 +64,7 @@ func CheckUser(ctx context.Context, req *userdemo.CheckUserRequest) (int64, erro
 }
 
 // QueryUser query user info
-func QueryUser(ctx context.Context, req *userdemo.CheckUserRequest) (int64, errno.ErrNo) {
+func QueryUser(ctx context.Context, req *user.CheckUserRequest) (int64, errno.ErrNo) {
 	resp, err := userClient.CheckUser(ctx, req)
 	if err != nil {
 		return 0, errno.ConvertErr(err)
@@ -76,7 +77,7 @@ func QueryUser(ctx context.Context, req *userdemo.CheckUserRequest) (int64, errn
 }
 
 // InfoGet get user info
-func InfoGetUser(ctx context.Context, req *userdemo.InfoGetUserRequest) (*userdemo.User, error) {
+func InfoGetUser(ctx context.Context, req *user.InfoGetUserRequest) (*user.User, error) {
 	resp, err := userClient.InfoGetUser(ctx, req)
 	if err != nil {
 		return nil, err
@@ -88,7 +89,7 @@ func InfoGetUser(ctx context.Context, req *userdemo.InfoGetUserRequest) (*userde
 }
 
 // MGetUser multiple get list of user info
-func MGetUser(ctx context.Context, req *userdemo.MGetUserRequest) ([]*userdemo.User, error) {
+func MGetUser(ctx context.Context, req *user.MGetUserRequest) ([]*user.User, error) {
 	resp, err := userClient.MGetUser(ctx, req)
 	if err != nil {
 		return nil, err
@@ -100,7 +101,7 @@ func MGetUser(ctx context.Context, req *userdemo.MGetUserRequest) ([]*userdemo.U
 }
 
 // UpdateUser update user info
-func UpdateUser(ctx context.Context, req *userdemo.UpdateUserRequest) error {
+func UpdateUser(ctx context.Context, req *user.UpdateUserRequest) error {
 	resp, err := userClient.UpdateUser(ctx, req)
 	if err != nil {
 		return err

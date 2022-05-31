@@ -3,12 +3,12 @@ package pack
 import (
 	"errors"
 
-	"github.com/Baojiazhong/dousheng-ubuntu/kitex_gen/userdemo"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/errno"
+	"douyin/v1/kitex_gen/user"
+	"douyin/v1/pkg/errno"
 )
 
 // BuildBaseResp build baseResp from error
-func BuildBaseResp(err error) *userdemo.BaseResp {
+func BuildBaseResp(err error) *user.BaseResp {
 	if err == nil {
 		return baseResp(errno.Success)
 	}
@@ -22,9 +22,9 @@ func BuildBaseResp(err error) *userdemo.BaseResp {
 	return baseResp(s)
 }
 
-func baseResp(err errno.ErrNo) *userdemo.BaseResp {
-	return &userdemo.BaseResp{StatusCode: err.ErrCode, StatusMsg: err.ErrMsg}
+func baseResp(err errno.ErrNo) *user.BaseResp {
+	return &user.BaseResp{StatusCode: err.ErrCode, StatusMsg: err.ErrMsg}
 }
 
 // BuildCommonResp build commonResp from error
-// func BuildCommonResp(err error) *userdemo.BaseResp {}
+// func BuildCommonResp(err error) *user.BaseResp {}

@@ -1,7 +1,8 @@
 package db
 
 import (
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/constants"
+	"douyin/v1/pkg/constants"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

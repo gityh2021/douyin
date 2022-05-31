@@ -5,10 +5,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Baojiazhong/dousheng-ubuntu/cmd/api/handlers"
-	"github.com/Baojiazhong/dousheng-ubuntu/cmd/api/rpc"
-	"github.com/Baojiazhong/dousheng-ubuntu/kitex_gen/userdemo"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/constants"
+	"douyin/v1/cmd/api/handlers"
+	"douyin/v1/cmd/api/rpc"
+	"douyin/v1/kitex_gen/user"
+	"douyin/v1/pkg/constants"
+
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/gin-gonic/gin"
@@ -18,11 +19,9 @@ func Init() {
 	rpc.InitRPC()
 }
 
-// var authMiddleware *jwt.GinJWTMiddleware
-
 func main() {
 	Init()
-	r := gin.New()
+	r := gin.Default()
 	authMiddleware, _ := jwt.New(&jwt.GinJWTMiddleware{
 		Key:        []byte(constants.SecretKey),
 		Timeout:    time.Hour,
@@ -30,7 +29,6 @@ func main() {
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			// fmt.Printf("data: %v\n", data)
 			if v, ok := data.(int64); ok {
-				// fmt.Println("11111111111111111111111111111")
 				return jwt.MapClaims{
 					constants.IdentityKey: v,
 				}
@@ -45,63 +43,42 @@ func main() {
 				return "", jwt.ErrMissingLoginValues
 			}
 
-			return rpc.CheckUser(context.Background(), &userdemo.CheckUserRequest{Username: loginVar1.UserName, Password: loginVar1.PassWord})
+			return rpc.CheckUser(context.Background(), &user.CheckUserRequest{Username: loginVar1.UserName, Password: loginVar1.PassWord})
 		},
 		LoginResponse: func(c *gin.Context, code int, token string, expire time.Time) {
 			var loginVar2 handlers.UserParam
 			loginVar2.UserName = c.Query("username")
 			loginVar2.PassWord = c.Query("password")
-			user_id, res := rpc.QueryUser(context.Background(), &userdemo.CheckUserRequest{Username: loginVar2.UserName, Password: loginVar2.PassWord})
-			// c.JSON(http.StatusOK, gin.H{
-			// 	"status_code": res.ErrCode,
-			// 	"status_msg":  res.ErrMsg,
-			// 	"user_id":     user_id,
-			// 	"token":       token,
-			// })
+			user_id, res := rpc.QueryUser(context.Background(), &user.CheckUserRequest{Username: loginVar2.UserName, Password: loginVar2.PassWord})
 			handlers.SendLoginResponse(c, res, user_id, loginVar2.UserName, token, expire)
 		},
 		TokenLookup:   "header: Authorization, query: token, cookie: jwt",
 		TokenHeadName: "Bearer",
 		TimeFunc:      time.Now,
 	})
-
+	// 文件系统静态资源获取
+	r.StaticFS("/cover", http.Dir("./cmd/api/static/images"))
+	r.StaticFS("/videos", http.Dir("./cmd/api/static/videos"))
 	v1 := r.Group("/douyin")
-	user1 := v1.Group("/user")
-	user1.POST("/login/", authMiddleware.LoginHandler)
-	user1.POST("/register/", handlers.Register, authMiddleware.LoginHandler)// 注册后自动登录
+	// user1 := v1.Group("/user")
+	v1.POST("/user/login/", authMiddleware.LoginHandler)
+	v1.POST("/user/register/", handlers.Register, authMiddleware.LoginHandler) // 注册后自动登录
 	// ----------------------------------------------
-	user1.Use(authMiddleware.MiddlewareFunc())
-	user1.GET("/", handlers.GetUserInfo)
+	//user1.Use(authMiddleware.MiddlewareFunc())
+	v1.Use(authMiddleware.MiddlewareFunc())
+	v1.GET("/user/", handlers.GetUserInfo)
+	v1.GET("/feed", handlers.GetVideoFeed)
+	v1.GET("/publish/list/", handlers.GetMyPublishVideoList)
+	v1.POST("/publish/action/", handlers.PublishVideo)
 
-	user2 := v1.Group("/relation")
-	user2.Use(authMiddleware.MiddlewareFunc())
-	user2.GET("/follow/list/", handlers.GetFollowList)
-	user2.GET("/follower/list/", handlers.GetFollowerList)
-	user2.POST("/action/", handlers.FollowAction)
+	// user2 := v1.Group("/relation")
+	// v1.Use(authMiddleware.MiddlewareFunc())
+	v1.GET("/relation/follow/list/", handlers.GetFollowList)
+	v1.GET("/relation/follower/list/", handlers.GetFollowerList)
+	v1.POST("/relation/action/", handlers.FollowAction)
 
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		klog.Fatal(err)
 	}
+	r.Run()
 }
-
-// func Register(c *gin.Context) {
-// 	var registerVar handlers.UserParam
-// 	registerVar.UserName = c.Query("username")
-// 	registerVar.PassWord = c.Query("password")
-
-// 	if len(registerVar.UserName) == 0 || len(registerVar.PassWord) == 0 {
-// 		handlers.SendResponse(c, errno.ParamErr, nil)
-// 		return
-// 	}
-// 	// kong context
-// 	err := rpc.CreateUser(context.Background(), &userdemo.CreateUserRequest{
-// 		Username: registerVar.UserName,
-// 		Password: registerVar.PassWord,
-// 	})
-// 	if err != nil {
-// 		handlers.SendResponse(c, errno.ConvertErr(err), nil)
-// 		return
-// 	}
-// 	// auto login
-// 	authMiddleware.LoginHandler(c)
-// }

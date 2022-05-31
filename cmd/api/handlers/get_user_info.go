@@ -3,10 +3,11 @@ package handlers
 import (
 	"context"
 
-	"github.com/Baojiazhong/dousheng-ubuntu/cmd/api/rpc"
-	"github.com/Baojiazhong/dousheng-ubuntu/kitex_gen/userdemo"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/constants"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/errno"
+	"douyin/v1/cmd/api/rpc"
+	"douyin/v1/kitex_gen/user"
+	"douyin/v1/pkg/constants"
+	"douyin/v1/pkg/errno"
+
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +18,7 @@ func GetUserInfo(c *gin.Context) {
 	// fmt.Printf("claims[constants.IdentityKey]: %v\n", claims[constants.IdentityKey])
 	userID := int64(claims[constants.IdentityKey].(float64))
 
-	req := &userdemo.InfoGetUserRequest{UserId: userID}
+	req := &user.InfoGetUserRequest{UserId: userID}
 	user, err := rpc.InfoGetUser(context.Background(), req)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)

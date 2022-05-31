@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Baojiazhong/dousheng-ubuntu/cmd/user/dal/db"
-	"github.com/Baojiazhong/dousheng-ubuntu/cmd/user/pack"
-	"github.com/Baojiazhong/dousheng-ubuntu/kitex_gen/userdemo"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/constants"
+	"douyin/v1/cmd/user/dal/db"
+	"douyin/v1/cmd/user/pack"
+	"douyin/v1/kitex_gen/user"
+	"douyin/v1/pkg/constants"
 )
 
 type MGetUserService struct {
@@ -20,7 +20,7 @@ func NewMGetUserService(ctx context.Context) *MGetUserService {
 }
 
 // MGetUser multiple get list of user info
-func (s *MGetUserService) MGetUser(req *userdemo.MGetUserRequest) ([]*userdemo.User, error) {
+func (s *MGetUserService) MGetUser(req *user.MGetUserRequest) ([]*user.User, error) {
 	Users, err := db.MGetUsers(s.ctx, req)
 	if err != nil {
 		return nil, err

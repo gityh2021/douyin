@@ -3,8 +3,9 @@ package db
 import (
 	"context"
 
-	"github.com/Baojiazhong/dousheng-ubuntu/kitex_gen/userdemo"
-	"github.com/Baojiazhong/dousheng-ubuntu/pkg/constants"
+	"douyin/v1/kitex_gen/user"
+	"douyin/v1/pkg/constants"
+
 	"gorm.io/gorm"
 )
 
@@ -42,7 +43,7 @@ func QueryFollowerById(ctx context.Context, userId int64) ([]*int64, error) {
 	return followerIds, nil
 }
 
-func DealWithFollowRelation(ctx context.Context, req *userdemo.UpdateUserRequest) error {
+func DealWithFollowRelation(ctx context.Context, req *user.UpdateUserRequest) error {
 	if req.ActionType == constants.RelationAdd {
 		// 添加关注
 		return DB.WithContext(ctx).Create(&Follower{UserID: req.ToUserId, FollowerID: req.UserId}).Error
