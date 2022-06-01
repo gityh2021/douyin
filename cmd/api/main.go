@@ -12,11 +12,18 @@ func init() {
 	rpc.InitRpc()
 }
 func main() {
+	//r := gin.New()
+	//v1 := r.Group("/douyin")
+	//video := v1.Group("/publish")
+	//video.GET("/list", handlers.GetMyPublishVideoList)
+	//if err := http.ListenAndServe(":8080", r); err != nil {
+	//	klog.Fatal(err)
+	//}
 	r := gin.New()
-	v1 := r.Group("/douyin")
-	video := v1.Group("/publish")
-	video.GET("/list", handlers.GetMyPublishVideoList)
+	v1 := r.Group("/favorite")
+	v1.GET("/action", handlers.FavoriteByUser)
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		klog.Fatal(err)
 	}
+
 }
