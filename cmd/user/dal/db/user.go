@@ -142,10 +142,28 @@ func UpdateUser(ctx context.Context, req *user.UpdateUserRequest) error {
 	return nil
 }
 
-func QueryFollowRelation(ctx context.Context, users []*User, userId int64) ([]int64, error) {
-	isFollowList := make([]int64, len(users))
+func QueryFollowRelation(ctx context.Context, users []*User, userId int64) ([]bool, error) {
+	isFollowList := make([]bool, len(users))
 	for i, user := range users {
-		DB.WithContext(ctx).Model(&Follower{}).Where("user_id = ? and follower_id = ?", user.ID, userId).Count(&isFollowList[i])
+		var temp int64 = 0
+		DB.WithContext(ctx).Model(&Follower{}).Where("user_id = ? and follower_id = ?", user.ID, userId).Count(&temp)
+		if temp > 0 {
+			isFollowList[i] = true
+		} else {
+			isFollowList[i] = false
+		}
 	}
 	return isFollowList, nil
+}
+
+func GetUserInfoList(ctx context.Context, userIDs []int64) ([]*User, error) {
+	var res []*User
+	if len(userIDs) == 0 {
+		return res, nil
+	}
+
+	if err := DB.WithContext(ctx).Where("id in ?", userIDs).Find(&res).Error; err != nil {
+		return nil, err
+	}
+	return res, nil
 }

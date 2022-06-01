@@ -25,10 +25,10 @@ func User(u *db.User, IsFollow bool) *user.User {
 // 	return users
 // }
 
-func Users(us []*db.User, IsFollowList []int64) []*user.User {
+func Users(us []*db.User, IsFollowList []bool) []*user.User {
 	users := make([]*user.User, 0)
 	for i, u := range us {
-		if IsFollowList[i] > 0 { // == 1
+		if IsFollowList[i] { // == 1
 			if user2 := User(u, true); user2 != nil {
 				users = append(users, user2)
 			}
@@ -39,4 +39,15 @@ func Users(us []*db.User, IsFollowList []int64) []*user.User {
 		}
 	}
 	return users
+}
+
+func UsersInfo(us []*db.User, IsFollowList []*bool) []*user.User {
+	users := make([]*user.User, 0)
+	// for i, m := range us {
+	// 	if n := User(m, IsFollowList[i]); n != nil {
+	// 		users = append(users, n)
+	// 	}
+	// }
+	return users
+
 }

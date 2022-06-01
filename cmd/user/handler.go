@@ -14,7 +14,6 @@ type UserServiceImpl struct{}
 
 // CreateUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) CreateUser(ctx context.Context, req *user.CreateUserRequest) (resp *user.CreateUserResponse, err error) {
-	// TODO: Your code here...
 	resp = new(user.CreateUserResponse)
 
 	if len(req.Username) == 0 || len(req.Password) == 0 {
@@ -33,7 +32,6 @@ func (s *UserServiceImpl) CreateUser(ctx context.Context, req *user.CreateUserRe
 
 // CheckUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) CheckUser(ctx context.Context, req *user.CheckUserRequest) (resp *user.CheckUserResponse, err error) {
-	// TODO: Your code here...
 	resp = new(user.CheckUserResponse)
 
 	if len(req.Username) == 0 || len(req.Password) == 0 {
@@ -53,7 +51,6 @@ func (s *UserServiceImpl) CheckUser(ctx context.Context, req *user.CheckUserRequ
 
 // InfoGetUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) InfoGetUser(ctx context.Context, req *user.InfoGetUserRequest) (resp *user.InfoGetUserResponse, err error) {
-	// TODO: Your code here...
 	resp = new(user.InfoGetUserResponse)
 
 	if req.UserId < 1 {
@@ -78,7 +75,6 @@ func (s *UserServiceImpl) InfoGetUser(ctx context.Context, req *user.InfoGetUser
 
 // MGetUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) MGetUser(ctx context.Context, req *user.MGetUserRequest) (resp *user.MGetUserResponse, err error) {
-	// TODO: Your code here...
 	// user info, follow and follower
 	resp = new(user.MGetUserResponse)
 
@@ -100,7 +96,6 @@ func (s *UserServiceImpl) MGetUser(ctx context.Context, req *user.MGetUserReques
 
 // UpdateUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) UpdateUser(ctx context.Context, req *user.UpdateUserRequest) (resp *user.UpdateUserResponse, err error) {
-	// TODO: Your code here...
 	resp = new(user.UpdateUserResponse)
 
 	if req.UserId < 1 || req.ToUserId < 1 || req.ActionType < 1 || req.ActionType > 2 {
@@ -116,4 +111,24 @@ func (s *UserServiceImpl) UpdateUser(ctx context.Context, req *user.UpdateUserRe
 	resp.BaseResp = pack.BuildBaseResp(errno.Success)
 	return resp, nil
 
+}
+
+// GetUserInfoList implements the UserServiceImpl interface.
+func (s *UserServiceImpl) GetUserInfoList(ctx context.Context, req *user.GetUserInfoListRequest) (resp *user.GetUserInfoListResponse, err error) {
+	resp = new(user.GetUserInfoListResponse)
+
+	if len(req.UserIds) == 0 {
+		resp.BaseResp = pack.BuildBaseResp(errno.ParamErr)
+		return resp, nil
+	}
+
+	users, err := service.NewGetUserInfoListService(ctx).GetUserInfoList(req)
+	if err != nil {
+		resp.BaseResp = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+ 
+	resp.BaseResp = pack.BuildBaseResp(errno.Success)
+	resp.Users = users
+	return resp, nil
 }

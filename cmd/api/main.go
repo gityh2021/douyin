@@ -76,7 +76,6 @@ func main() {
 	v1.GET("/relation/follow/list/", handlers.GetFollowList)
 	v1.GET("/relation/follower/list/", handlers.GetFollowerList)
 	v1.POST("/relation/action/", handlers.FollowAction)
-
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		klog.Fatal(err)
 	}

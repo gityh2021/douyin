@@ -27,9 +27,9 @@ func (s *MGetUserService) MGetUser(req *user.MGetUserRequest) ([]*user.User, err
 	}
 	if req.ActionType == constants.QueryFollowList {
 		// 查询到的用户列表中的is_follow字段一定为true
-		isFollowList := make([]int64, len(Users))
+		isFollowList := make([]bool, len(Users))
 		for i := range Users {
-			isFollowList[i] = 1
+			isFollowList[i] = true
 		}
 		return pack.Users(Users, isFollowList), nil
 	} else if req.ActionType == constants.QueryFollowerList {
@@ -44,9 +44,9 @@ func (s *MGetUserService) MGetUser(req *user.MGetUserRequest) ([]*user.User, err
 		return pack.Users(Users, isFollowLIst), nil
 		// return pack.Users(Users, false), nil
 	} else {
-		isFollowList := make([]int64, len(Users))
+		isFollowList := make([]bool, len(Users))
 		for i := range Users {
-			isFollowList[i] = 0
+			isFollowList[i] = false
 		}
 		return pack.Users(Users, isFollowList), nil // default
 	}

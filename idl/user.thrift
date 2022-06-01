@@ -63,10 +63,23 @@ struct UpdateUserResponse {
     1:BaseResp base_resp
 }
 
+// 根据userid list获取user info list
+// 调用方法：userClient.GetUserInfoList(ctx, req)
+struct GetUserInfoListRequest {
+    1:list<i64> user_ids
+    2:i64 user_id// 登录用户的userid（用于判断是否已关注视频作者）
+}
+
+struct GetUserInfoListResponse {
+    1:BaseResp base_resp
+    2:list<User> users
+}
+
 service UserService {
     CreateUserResponse CreateUser(1:CreateUserRequest req)
     CheckUserResponse CheckUser(1:CheckUserRequest req)
     InfoGetUserResponse InfoGetUser(1:InfoGetUserRequest req)
     MGetUserResponse MGetUser(1:MGetUserRequest req)
     UpdateUserResponse UpdateUser(1:UpdateUserRequest req)
+    GetUserInfoListResponse GetUserInfoList(1:GetUserInfoListRequest req)
 }
