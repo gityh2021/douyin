@@ -21,13 +21,7 @@ struct PublishListResponse{
     1:BaseResp base_resp
     2:list<Video> video_list
 }
-struct VideoFeedResponse{
-    1:BaseResp base_resp
-    2:i64 next_time
-    3:list<Video> video_list
-}
+
 service VideoService{
     PublishListResponse GetPublishListByUser(1:i64 user_id)
-    VideoFeedResponse GetVideosByLastTime(1:i64 last_time)
-    BaseResp PublishVideo(1:Video published_video)
 }

@@ -43,10 +43,17 @@ type CreateVideoResponse struct {
 	Message string `json:"status_msg"`
 }
 
-func SendCreateVideoResponse(c *gin.Context, err error, data interface{}) {
+func SendCreateVideoResponse(c *gin.Context, err error) {
 	Err := errno.ConvertErr(err)
-	c.JSON(http.StatusOK, QueryByUserIdResponse{
+	c.JSON(http.StatusOK, CreateVideoResponse{
 		Code:    Err.ErrCode,
 		Message: Err.ErrMsg,
 	})
+}
+
+type VideoCommentParam struct {
+	CommentId     int64  `json:"comment_id"`
+	CommentUserId int64  `json:"comment_user_id"`
+	Content       string `json:"content"`
+	CreateDate    string `json:"create_date"`
 }

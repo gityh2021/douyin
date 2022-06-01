@@ -12,9 +12,13 @@ require (
 	gorm.io/plugin/opentracing v0.0.0-20211220013347-7d2b2af23560
 )
 
-require github.com/bytedance/gopkg v0.0.0-20220519031347-b9c1c36b51a6 // indirect
+require (
+	github.com/bytedance/gopkg v0.0.0-20220519031347-b9c1c36b51a6 // indirect
+	github.com/golang-jwt/jwt/v4 v4.2.0 // indirect
+)
 
 require (
+	github.com/appleboy/gin-jwt/v2 v2.8.0
 	// github.com/bytedance/gopkg v0.0.0-20220413063733-65bf48ffb3a7 // indirect
 	github.com/choleraehyq/pid v0.0.13 // indirect
 	github.com/cloudwego/netpoll v0.2.2 // indirect
@@ -36,7 +40,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
-	github.com/tidwall/gjson v1.9.3 // indirect
+	github.com/tidwall/gjson v1.12.1 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
