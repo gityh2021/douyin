@@ -3,7 +3,7 @@ package handlers
 import (
 	"context"
 	"douyin/v1/cmd/api/rpc"
-	"douyin/v1/kitex_gen/video"
+	"douyin/v1/cmd/api/vo"
 	"douyin/v1/pkg/errno"
 	"github.com/gin-gonic/gin"
 	"strconv"
@@ -22,13 +22,39 @@ func GetFavoriteLIst(c *gin.Context) {
 		return
 	}
 	userId, err := strconv.ParseInt(userIdStr, 10, 64)
-	request := video.NewFavoriteListRequest()
-	request.UserId = userId
-	request.Token = token
-	resp, err := rpc.GetFavoriteList(context.Background(), request)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
 		return
 	}
-	SendResponse(c, errno.Success, resp)
+	tokenId := vo.GetUserIdFromToken(c)
+	if tokenId == -1 {
+		SendResponse(c, errno.LoginErr, nil)
+		return
+	}
+	if tokenId != userId {
+		SendResponse(c, errno.IdNotEqualErr, nil)
+		return
+	}
+	videos, err := rpc.GetFavoriteList(context.Background(), tokenId)
+	if err != nil {
+		SendResponse(c, errno.ConvertErr(err), nil)
+		return
+	}
+	if len(videos) == 0 {
+		SendResponse(c, errno.Success, videos)
+		return
+	} else {
+		ids := make([]int64, len(videos))
+		for i := 0; i < len(videos); i++ {
+			ids[i] = videos[i].AuthorId
+			videos[i].IsFavorite = true
+		}
+		users, err := rpc.GetUsersByIds(c, ids, tokenId)
+		if err != nil {
+			SendResponse(c, err, nil)
+			return
+		}
+		videoVos := vo.PackVideoVos(users, videos)
+		SendResponse(c, errno.Success, videoVos)
+	}
 }

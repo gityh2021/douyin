@@ -30,14 +30,8 @@ struct VideoFeedResponse{
 // favorite
 struct FavoriteActionRequest {
    1:i64 user_id
-   2:string token
    3:i64 video_id
    4:i64 action_type
-}
-
-struct FavoriteListRequest {
-   1:i64 user_id
-   2:string token
 }
 
 struct FavoriteListResponse {
@@ -45,10 +39,34 @@ struct FavoriteListResponse {
       2:list<Video> video_list
 }
 
+// comment
+struct Comment{
+    1:i64    id
+    2:i64    user_id
+    3:i64    video_id
+    4:string content
+    5:string create_date
+}
+struct CommentListResponse {
+      1:BaseResp base_resp
+      2:list<Comment> comment_list
+}
+struct CommentActionResponse {
+      1:BaseResp base_resp
+      2:Comment comment
+}
+struct CommentActionRequest {
+      1:BaseResp base_resp
+      2:Comment comment
+      3:i64 action_type
+}
 service VideoService{
     PublishListResponse GetPublishListByUser(1:i64 user_id)
-    VideoFeedResponse GetVideosByLastTime(1:i64 last_time)
+    VideoFeedResponse GetVideosByLastTime(1:i64 last_time, 2:i64 user_id)
     BaseResp PublishVideo(1:Video published_video)
     BaseResp FavoriteByUser(1:FavoriteActionRequest request)
-    FavoriteListResponse GetFavoriteListBYUser(1:FavoriteListRequest request)
+    FavoriteListResponse GetFavoriteListBYUser(1:i64 user_id)
+    CommentListResponse GetCommentListByVideo(1:i64 video_id)
+    CommentActionResponse PostComment(1:CommentActionRequest comment_action_request)
+
 }

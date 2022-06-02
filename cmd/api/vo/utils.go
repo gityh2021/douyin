@@ -28,7 +28,7 @@ func PackVideoVos(users []*user.User, videos []*video.Video) []*VideoVo {
 			CoverURL:      videos[i].CoverUrl,
 			FavoriteCount: videos[i].FavoriteCount,
 			CommentCount:  videos[i].CommentCount,
-			IsFavorite:    false,
+			IsFavorite:    videos[i].IsFavorite,
 			Title:         videos[i].Title,
 		}
 		videoVos[i] = &videoVo

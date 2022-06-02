@@ -35,11 +35,16 @@ func Init() {
 		}
 	}
 
-	if m.HasTable(&Favorite{}) {
-		return
+	if !m.HasTable(&Favorite{}) {
+		if err = m.CreateTable(&Favorite{}); err != nil {
+			panic(err)
+		}
 	}
-	if err = m.CreateTable(&Favorite{}); err != nil {
-		panic(err)
+
+	if !m.HasTable(&Comment{}) {
+		if err = m.CreateTable(&Comment{}); err != nil {
+			panic(err)
+		}
 	}
 
 }

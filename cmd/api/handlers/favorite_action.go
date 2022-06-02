@@ -5,6 +5,7 @@ import (
 	"douyin/v1/cmd/api/rpc"
 	"douyin/v1/cmd/api/vo"
 	"douyin/v1/kitex_gen/video"
+	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/errno"
 	"github.com/gin-gonic/gin"
 	"strconv"
@@ -19,23 +20,15 @@ type FavoriteActionParam struct {
 
 func FavoriteByUser(c *gin.Context) {
 	tokenId := vo.GetUserIdFromToken(c)
-	userIdStr := c.Query("user_id")
 	videoIdStr := c.Query("video_id")
 	actionTypeStr := c.Query("action_type")
 	if tokenId == -1 || videoIdStr == "" || actionTypeStr == "" {
 		SendResponse(c, errno.ParamErr, nil)
 		return
 	}
-	if userIdStr != "" {
-		userId, err := strconv.ParseInt(userIdStr, 10, 64)
-		if err != nil {
-			SendResponse(c, err, nil)
-			return
-		}
-		if userId != tokenId {
-			SendResponse(c, errno.IdNotEqualErr, nil)
-			return
-		}
+	if tokenId == constants.NotLogin {
+		SendResponse(c, errno.LoginErr, nil)
+		return
 	}
 	videoId, err := strconv.ParseInt(videoIdStr, 10, 64)
 	if err != nil {

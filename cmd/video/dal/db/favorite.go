@@ -8,8 +8,8 @@ import (
 type Favorite struct {
 	gorm.Model
 	ID      int64 `gorm:"primarykey" json:"id"`
-	UserId  int64 `gorm:"default:0" json:"user_id"`
-	VideoId int64 `gorm:"default:0" json:"video_id"`
+	UserId  int64 `gorm:"not null" json:"user_id"`
+	VideoId int64 `gorm:"not null" json:"video_id"`
 }
 
 func MGetFavoriteList(ctx context.Context, userId int64) ([]*Video, error) {
@@ -28,4 +28,8 @@ func MPostFavoriteAction(ctx context.Context, userId int64, videoId int64) error
 		VideoId: videoId,
 	}
 	return DB.WithContext(ctx).Create(&favorite).Error
+}
+
+func MCancelFavoriteAction(ctx context.Context, userId int64, videoId int64) error {
+	return DB.WithContext(ctx).Where("user_id = ? and video_id = ?", userId, videoId).Delete(&Favorite{}).Error
 }

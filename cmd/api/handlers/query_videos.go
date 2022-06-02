@@ -64,7 +64,7 @@ func GetVideoFeed(c *gin.Context) {
 			lastTime = t
 		}
 	}
-	videos, nextTime, err := rpc.GetVideosFeed(context.Background(), lastTime)
+	videos, nextTime, err := rpc.GetVideosFeed(context.Background(), lastTime, userIdFromToken)
 	if err != nil {
 		SendQueryByLastTimeResponse(c, err, nil, nextTime)
 		return

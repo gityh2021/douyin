@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"gorm.io/gorm"
 	"time"
 )
@@ -28,7 +27,6 @@ func MGetVideosByUserID(ctx context.Context, userId int64) ([]*Video, error) {
 }
 
 func MGetVideosByTime(ctx context.Context, lastTime int64) ([]*Video, error) {
-	fmt.Println(time.Unix(lastTime, 0).Format("2006-01-02 15:04:05"))
 	res := make([]*Video, 0)
 	if err := DB.WithContext(ctx).Where("created_at < ?", time.Unix(lastTime, 0).Format("2006-01-02 15:04:05")).Order("created_at desc").Limit(30).Find(&res).Error; err != nil {
 		return nil, err

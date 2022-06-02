@@ -13,6 +13,7 @@ const (
 	UserNotExistErrCode     = 10004
 	UserAlreadyExistErrCode = 10005
 	IdNotEqualErrCode       = 20001
+	ActionUnSupportErrCode  = 20002
 )
 
 type ErrNo struct {
@@ -36,6 +37,7 @@ func (e ErrNo) WithMessage(msg string) ErrNo {
 var (
 	Success             = NewErrNo(SuccessCode, "Success")
 	IdNotEqualErr       = NewErrNo(IdNotEqualErrCode, "two user ids are not equal")
+	ActionUnSupportErr  = NewErrNo(ActionUnSupportErrCode, "The action type is not supported yet")
 	ServiceErr          = NewErrNo(ServiceErrCode, "Service is unable to start successfully")
 	ParamErr            = NewErrNo(ParamErrCode, "Wrong Parameter has been given")
 	LoginErr            = NewErrNo(LoginErrCode, "Wrong username or password")

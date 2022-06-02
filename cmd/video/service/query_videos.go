@@ -24,7 +24,7 @@ func (s *QueryVideoService) GetPublishList(userId int64) ([]*video.Video, error)
 	return pack.Videos(videos), nil
 }
 
-func (s *QueryVideoService) GetVideoFeed(lastTime int64) ([]*video.Video, time.Time, error) {
+func (s *QueryVideoService) GetVideoFeed(lastTime int64, userId int64) ([]*video.Video, time.Time, error) {
 	videos, err := db.MGetVideosByTime(s.ctx, lastTime)
 	if err != nil {
 		return nil, time.Now(), err

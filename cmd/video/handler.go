@@ -29,13 +29,13 @@ func (s *VideoServiceImpl) GetPublishListByUser(ctx context.Context, userId int6
 }
 
 // GetVideosByLastTime implements the VideoServiceImpl interface.
-func (s *VideoServiceImpl) GetVideosByLastTime(ctx context.Context, lastTime int64) (resp *video.VideoFeedResponse, err error) {
+func (s *VideoServiceImpl) GetVideosByLastTime(ctx context.Context, lastTime int64, userId int64) (resp *video.VideoFeedResponse, err error) {
 	response := new(video.VideoFeedResponse)
 	if lastTime < 0 {
 		response.SetBaseResp(pack.BuildBaseResp(errno.ParamErr))
 		return response, nil
 	}
-	videos, nextTime, err := service.NewQueryVideoService(ctx).GetVideoFeed(lastTime)
+	videos, nextTime, err := service.NewQueryVideoService(ctx).GetVideoFeed(lastTime, userId)
 	if err != nil {
 		response.SetBaseResp(pack.BuildBaseResp(err))
 		return response, nil
@@ -64,7 +64,7 @@ func (s *VideoServiceImpl) FavoriteByUser(ctx context.Context, request *video.Fa
 		response = pack.BuildBaseResp(errno.ParamErr)
 		return response, nil
 	}
-	err = service.NewQueryFavoriteService(ctx).FavoriteByUser(request.UserId, request.VideoId)
+	err = service.NewQueryFavoriteService(ctx).FavoriteByUser(request.UserId, request.VideoId, request.ActionType)
 	if err != nil {
 		response = pack.BuildBaseResp(err)
 		return response, nil
@@ -74,14 +74,14 @@ func (s *VideoServiceImpl) FavoriteByUser(ctx context.Context, request *video.Fa
 }
 
 // GetFavoriteListBYUser implements the VideoServiceImpl interface.
-func (s *VideoServiceImpl) GetFavoriteListBYUser(ctx context.Context, request *video.FavoriteListRequest) (resp *video.FavoriteListResponse, err error) {
+func (s *VideoServiceImpl) GetFavoriteListBYUser(ctx context.Context, userId int64) (resp *video.FavoriteListResponse, err error) {
 	response := new(video.FavoriteListResponse)
 
-	if request.UserId < 0 {
+	if userId < 0 {
 		response.SetBaseResp(pack.BuildBaseResp(errno.ParamErr))
 		return response, nil
 	}
-	videos, err := service.NewQueryFavoriteService(ctx).GetFavoriteListByUser(request.UserId)
+	videos, err := service.NewQueryFavoriteService(ctx).GetFavoriteListByUser(userId)
 	if err != nil {
 		response.SetBaseResp(pack.BuildBaseResp(err))
 		return response, nil
@@ -89,4 +89,16 @@ func (s *VideoServiceImpl) GetFavoriteListBYUser(ctx context.Context, request *v
 	response.SetBaseResp(pack.BuildBaseResp(errno.Success))
 	response.SetVideoList(videos)
 	return response, nil
+}
+
+// GetCommentListByVideo implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) GetCommentListByVideo(ctx context.Context, videoId int64) (resp *video.CommentListResponse, err error) {
+	// TODO: Your code here...
+	return
+}
+
+// PostComment implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) PostComment(ctx context.Context, commentActionRequest *video.CommentActionRequest) (resp *video.CommentActionResponse, err error) {
+	// TODO: Your code here...
+	return
 }

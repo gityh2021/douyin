@@ -45,8 +45,8 @@ func GetPublishVideoList(ctx context.Context, userId int64) ([]*video.Video, err
 	return resp.VideoList, nil
 }
 
-func GetVideosFeed(ctx context.Context, lastTime int64) ([]*video.Video, int64, error) {
-	resp, err := videoClient.GetVideosByLastTime(ctx, lastTime)
+func GetVideosFeed(ctx context.Context, lastTime int64, userId int64) ([]*video.Video, int64, error) {
+	resp, err := videoClient.GetVideosByLastTime(ctx, lastTime, userId)
 	if err != nil {
 		return nil, time.Now().Unix(), err
 	}
@@ -67,8 +67,8 @@ func CreateVideo(ctx context.Context, video *video.Video) error {
 	return nil
 }
 
-func GetFavoriteList(ctx context.Context, request *video.FavoriteListRequest) ([]*video.Video, error) {
-	resp, err := videoClient.GetFavoriteListBYUser(ctx, request)
+func GetFavoriteList(ctx context.Context, userId int64) ([]*video.Video, error) {
+	resp, err := videoClient.GetFavoriteListBYUser(ctx, userId)
 	if err != nil {
 		return nil, err
 	}

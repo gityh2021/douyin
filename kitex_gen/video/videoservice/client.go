@@ -12,10 +12,12 @@ import (
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	GetPublishListByUser(ctx context.Context, userId int64, callOptions ...callopt.Option) (r *video.PublishListResponse, err error)
-	GetVideosByLastTime(ctx context.Context, lastTime int64, callOptions ...callopt.Option) (r *video.VideoFeedResponse, err error)
+	GetVideosByLastTime(ctx context.Context, lastTime int64, userId int64, callOptions ...callopt.Option) (r *video.VideoFeedResponse, err error)
 	PublishVideo(ctx context.Context, publishedVideo *video.Video, callOptions ...callopt.Option) (r *video.BaseResp, err error)
 	FavoriteByUser(ctx context.Context, request *video.FavoriteActionRequest, callOptions ...callopt.Option) (r *video.BaseResp, err error)
-	GetFavoriteListBYUser(ctx context.Context, request *video.FavoriteListRequest, callOptions ...callopt.Option) (r *video.FavoriteListResponse, err error)
+	GetFavoriteListBYUser(ctx context.Context, userId int64, callOptions ...callopt.Option) (r *video.FavoriteListResponse, err error)
+	GetCommentListByVideo(ctx context.Context, videoId int64, callOptions ...callopt.Option) (r *video.CommentListResponse, err error)
+	PostComment(ctx context.Context, commentActionRequest *video.CommentActionRequest, callOptions ...callopt.Option) (r *video.CommentActionResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -52,9 +54,9 @@ func (p *kVideoServiceClient) GetPublishListByUser(ctx context.Context, userId i
 	return p.kClient.GetPublishListByUser(ctx, userId)
 }
 
-func (p *kVideoServiceClient) GetVideosByLastTime(ctx context.Context, lastTime int64, callOptions ...callopt.Option) (r *video.VideoFeedResponse, err error) {
+func (p *kVideoServiceClient) GetVideosByLastTime(ctx context.Context, lastTime int64, userId int64, callOptions ...callopt.Option) (r *video.VideoFeedResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.GetVideosByLastTime(ctx, lastTime)
+	return p.kClient.GetVideosByLastTime(ctx, lastTime, userId)
 }
 
 func (p *kVideoServiceClient) PublishVideo(ctx context.Context, publishedVideo *video.Video, callOptions ...callopt.Option) (r *video.BaseResp, err error) {
@@ -67,7 +69,17 @@ func (p *kVideoServiceClient) FavoriteByUser(ctx context.Context, request *video
 	return p.kClient.FavoriteByUser(ctx, request)
 }
 
-func (p *kVideoServiceClient) GetFavoriteListBYUser(ctx context.Context, request *video.FavoriteListRequest, callOptions ...callopt.Option) (r *video.FavoriteListResponse, err error) {
+func (p *kVideoServiceClient) GetFavoriteListBYUser(ctx context.Context, userId int64, callOptions ...callopt.Option) (r *video.FavoriteListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.GetFavoriteListBYUser(ctx, request)
+	return p.kClient.GetFavoriteListBYUser(ctx, userId)
+}
+
+func (p *kVideoServiceClient) GetCommentListByVideo(ctx context.Context, videoId int64, callOptions ...callopt.Option) (r *video.CommentListResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetCommentListByVideo(ctx, videoId)
+}
+
+func (p *kVideoServiceClient) PostComment(ctx context.Context, commentActionRequest *video.CommentActionRequest, callOptions ...callopt.Option) (r *video.CommentActionResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.PostComment(ctx, commentActionRequest)
 }

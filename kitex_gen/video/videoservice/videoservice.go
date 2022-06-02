@@ -24,6 +24,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"PublishVideo":          kitex.NewMethodInfo(publishVideoHandler, newVideoServicePublishVideoArgs, newVideoServicePublishVideoResult, false),
 		"FavoriteByUser":        kitex.NewMethodInfo(favoriteByUserHandler, newVideoServiceFavoriteByUserArgs, newVideoServiceFavoriteByUserResult, false),
 		"GetFavoriteListBYUser": kitex.NewMethodInfo(getFavoriteListBYUserHandler, newVideoServiceGetFavoriteListBYUserArgs, newVideoServiceGetFavoriteListBYUserResult, false),
+		"GetCommentListByVideo": kitex.NewMethodInfo(getCommentListByVideoHandler, newVideoServiceGetCommentListByVideoArgs, newVideoServiceGetCommentListByVideoResult, false),
+		"PostComment":           kitex.NewMethodInfo(postCommentHandler, newVideoServicePostCommentArgs, newVideoServicePostCommentResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "video",
@@ -60,7 +62,7 @@ func newVideoServiceGetPublishListByUserResult() interface{} {
 func getVideosByLastTimeHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*video.VideoServiceGetVideosByLastTimeArgs)
 	realResult := result.(*video.VideoServiceGetVideosByLastTimeResult)
-	success, err := handler.(video.VideoService).GetVideosByLastTime(ctx, realArg.LastTime)
+	success, err := handler.(video.VideoService).GetVideosByLastTime(ctx, realArg.LastTime, realArg.UserId)
 	if err != nil {
 		return err
 	}
@@ -114,7 +116,7 @@ func newVideoServiceFavoriteByUserResult() interface{} {
 func getFavoriteListBYUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*video.VideoServiceGetFavoriteListBYUserArgs)
 	realResult := result.(*video.VideoServiceGetFavoriteListBYUserResult)
-	success, err := handler.(video.VideoService).GetFavoriteListBYUser(ctx, realArg.Request)
+	success, err := handler.(video.VideoService).GetFavoriteListBYUser(ctx, realArg.UserId)
 	if err != nil {
 		return err
 	}
@@ -127,6 +129,42 @@ func newVideoServiceGetFavoriteListBYUserArgs() interface{} {
 
 func newVideoServiceGetFavoriteListBYUserResult() interface{} {
 	return video.NewVideoServiceGetFavoriteListBYUserResult()
+}
+
+func getCommentListByVideoHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServiceGetCommentListByVideoArgs)
+	realResult := result.(*video.VideoServiceGetCommentListByVideoResult)
+	success, err := handler.(video.VideoService).GetCommentListByVideo(ctx, realArg.VideoId)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newVideoServiceGetCommentListByVideoArgs() interface{} {
+	return video.NewVideoServiceGetCommentListByVideoArgs()
+}
+
+func newVideoServiceGetCommentListByVideoResult() interface{} {
+	return video.NewVideoServiceGetCommentListByVideoResult()
+}
+
+func postCommentHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServicePostCommentArgs)
+	realResult := result.(*video.VideoServicePostCommentResult)
+	success, err := handler.(video.VideoService).PostComment(ctx, realArg.CommentActionRequest)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newVideoServicePostCommentArgs() interface{} {
+	return video.NewVideoServicePostCommentArgs()
+}
+
+func newVideoServicePostCommentResult() interface{} {
+	return video.NewVideoServicePostCommentResult()
 }
 
 type kClient struct {
@@ -149,9 +187,10 @@ func (p *kClient) GetPublishListByUser(ctx context.Context, userId int64) (r *vi
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetVideosByLastTime(ctx context.Context, lastTime int64) (r *video.VideoFeedResponse, err error) {
+func (p *kClient) GetVideosByLastTime(ctx context.Context, lastTime int64, userId int64) (r *video.VideoFeedResponse, err error) {
 	var _args video.VideoServiceGetVideosByLastTimeArgs
 	_args.LastTime = lastTime
+	_args.UserId = userId
 	var _result video.VideoServiceGetVideosByLastTimeResult
 	if err = p.c.Call(ctx, "GetVideosByLastTime", &_args, &_result); err != nil {
 		return
@@ -179,11 +218,31 @@ func (p *kClient) FavoriteByUser(ctx context.Context, request *video.FavoriteAct
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetFavoriteListBYUser(ctx context.Context, request *video.FavoriteListRequest) (r *video.FavoriteListResponse, err error) {
+func (p *kClient) GetFavoriteListBYUser(ctx context.Context, userId int64) (r *video.FavoriteListResponse, err error) {
 	var _args video.VideoServiceGetFavoriteListBYUserArgs
-	_args.Request = request
+	_args.UserId = userId
 	var _result video.VideoServiceGetFavoriteListBYUserResult
 	if err = p.c.Call(ctx, "GetFavoriteListBYUser", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetCommentListByVideo(ctx context.Context, videoId int64) (r *video.CommentListResponse, err error) {
+	var _args video.VideoServiceGetCommentListByVideoArgs
+	_args.VideoId = videoId
+	var _result video.VideoServiceGetCommentListByVideoResult
+	if err = p.c.Call(ctx, "GetCommentListByVideo", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) PostComment(ctx context.Context, commentActionRequest *video.CommentActionRequest) (r *video.CommentActionResponse, err error) {
+	var _args video.VideoServicePostCommentArgs
+	_args.CommentActionRequest = commentActionRequest
+	var _result video.VideoServicePostCommentResult
+	if err = p.c.Call(ctx, "PostComment", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
