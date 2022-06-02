@@ -1,6 +1,7 @@
 package rpc
 
-func InitRpc() {
+func InitRPC() {
+	initUserRpc()
 	initVideoRpc()
 	initFavoriteRpc()
 }

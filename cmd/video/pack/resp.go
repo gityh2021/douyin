@@ -38,5 +38,5 @@ func BuildBaseResp(err error) *video.BaseResp {
 }
 
 func baseResp(err errno.ErrNo) *video.BaseResp {
-	return &video.BaseResp{StatusCode: err.ErrCode, StatusMessage: err.ErrMsg, ServiceTime: time.Now().Unix()}
+	return &video.BaseResp{StatusCode: err.ErrCode, StatusMsg: err.ErrMsg, ServiceTime: time.Now().Unix()}
 }

@@ -4,16 +4,19 @@ import (
 	"context"
 	"douyin/v1/kitex_gen/video"
 	"douyin/v1/kitex_gen/video/videoservice"
+	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/errno"
+	"time"
+
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
-	"time"
 )
+
 var videoClient videoservice.Client
 
 func initVideoRpc() {
-	r, err := etcd.NewEtcdResolver([]string{"139.224.195.12:2379"})
+	r, err := etcd.NewEtcdResolver([]string{constants.EtcdAddress})
 	if err != nil {
 		panic(err)
 	}
@@ -32,13 +35,35 @@ func initVideoRpc() {
 	videoClient = c
 }
 
-func GetPublishVideoList(ctx context.Context,  userId int64) ([]*video.Video, error) {
+func GetPublishVideoList(ctx context.Context, userId int64) ([]*video.Video, error) {
 	resp, err := videoClient.GetPublishListByUser(ctx, userId)
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
 	if resp.BaseResp.StatusCode != 0 {
-		return nil, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMessage)
+		return nil, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
 	}
 	return resp.VideoList, nil
+}
+
+func GetVideosFeed(ctx context.Context, lastTime int64) ([]*video.Video, int64, error) {
+	resp, err := videoClient.GetVideosByLastTime(ctx, lastTime)
+	if err != nil {
+		return nil, time.Now().Unix(), err
+	}
+	if resp.BaseResp.StatusCode != 0 {
+		return nil, resp.NextTime, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
+	}
+	return resp.VideoList, resp.NextTime, nil
+}
+
+func CreateVideo(ctx context.Context, video *video.Video) error {
+	resp, err := videoClient.PublishVideo(ctx, video)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != 0 {
+		return errno.NewErrNo(resp.StatusCode, resp.StatusMsg)
+	}
+	return nil
 }

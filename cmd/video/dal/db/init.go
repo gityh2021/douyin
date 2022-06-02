@@ -1,6 +1,8 @@
 package db
 
 import (
+	"douyin/v1/pkg/constants"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	gormopentracing "gorm.io/plugin/opentracing"
@@ -11,7 +13,7 @@ var DB *gorm.DB
 // Init init DB
 func Init() {
 	var err error
-	DB, err = gorm.Open(mysql.Open("root:Yang75769933@tcp(139.224.195.12:3305)/video?charset=utf8&parseTime=True&loc=Local"),
+	DB, err = gorm.Open(mysql.Open(constants.MySQLDefaultDSN),
 		&gorm.Config{
 			PrepareStmt:            true,
 			SkipDefaultTransaction: true,
@@ -31,6 +33,13 @@ func Init() {
 		return
 	}
 	if err = m.CreateTable(&Video{}); err != nil {
+		panic(err)
+	}
+
+	if m.HasTable(&Video_Comments{}) {
+		return
+	}
+	if err = m.CreateTable(&Video_Comments{}); err != nil {
 		panic(err)
 	}
 }

@@ -12,6 +12,8 @@ import (
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	GetPublishListByUser(ctx context.Context, userId int64, callOptions ...callopt.Option) (r *video.PublishListResponse, err error)
+	GetVideosByLastTime(ctx context.Context, lastTime int64, callOptions ...callopt.Option) (r *video.VideoFeedResponse, err error)
+	PublishVideo(ctx context.Context, publishedVideo *video.Video, callOptions ...callopt.Option) (r *video.BaseResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -46,4 +48,14 @@ type kVideoServiceClient struct {
 func (p *kVideoServiceClient) GetPublishListByUser(ctx context.Context, userId int64, callOptions ...callopt.Option) (r *video.PublishListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetPublishListByUser(ctx, userId)
+}
+
+func (p *kVideoServiceClient) GetVideosByLastTime(ctx context.Context, lastTime int64, callOptions ...callopt.Option) (r *video.VideoFeedResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetVideosByLastTime(ctx, lastTime)
+}
+
+func (p *kVideoServiceClient) PublishVideo(ctx context.Context, publishedVideo *video.Video, callOptions ...callopt.Option) (r *video.BaseResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.PublishVideo(ctx, publishedVideo)
 }

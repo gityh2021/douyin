@@ -20,6 +20,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	handlerType := (*video.VideoService)(nil)
 	methods := map[string]kitex.MethodInfo{
 		"GetPublishListByUser": kitex.NewMethodInfo(getPublishListByUserHandler, newVideoServiceGetPublishListByUserArgs, newVideoServiceGetPublishListByUserResult, false),
+		"GetVideosByLastTime":  kitex.NewMethodInfo(getVideosByLastTimeHandler, newVideoServiceGetVideosByLastTimeArgs, newVideoServiceGetVideosByLastTimeResult, false),
+		"PublishVideo":         kitex.NewMethodInfo(publishVideoHandler, newVideoServicePublishVideoArgs, newVideoServicePublishVideoResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "video",
@@ -53,6 +55,42 @@ func newVideoServiceGetPublishListByUserResult() interface{} {
 	return video.NewVideoServiceGetPublishListByUserResult()
 }
 
+func getVideosByLastTimeHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServiceGetVideosByLastTimeArgs)
+	realResult := result.(*video.VideoServiceGetVideosByLastTimeResult)
+	success, err := handler.(video.VideoService).GetVideosByLastTime(ctx, realArg.LastTime)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newVideoServiceGetVideosByLastTimeArgs() interface{} {
+	return video.NewVideoServiceGetVideosByLastTimeArgs()
+}
+
+func newVideoServiceGetVideosByLastTimeResult() interface{} {
+	return video.NewVideoServiceGetVideosByLastTimeResult()
+}
+
+func publishVideoHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServicePublishVideoArgs)
+	realResult := result.(*video.VideoServicePublishVideoResult)
+	success, err := handler.(video.VideoService).PublishVideo(ctx, realArg.PublishedVideo)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newVideoServicePublishVideoArgs() interface{} {
+	return video.NewVideoServicePublishVideoArgs()
+}
+
+func newVideoServicePublishVideoResult() interface{} {
+	return video.NewVideoServicePublishVideoResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -68,6 +106,26 @@ func (p *kClient) GetPublishListByUser(ctx context.Context, userId int64) (r *vi
 	_args.UserId = userId
 	var _result video.VideoServiceGetPublishListByUserResult
 	if err = p.c.Call(ctx, "GetPublishListByUser", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetVideosByLastTime(ctx context.Context, lastTime int64) (r *video.VideoFeedResponse, err error) {
+	var _args video.VideoServiceGetVideosByLastTimeArgs
+	_args.LastTime = lastTime
+	var _result video.VideoServiceGetVideosByLastTimeResult
+	if err = p.c.Call(ctx, "GetVideosByLastTime", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) PublishVideo(ctx context.Context, publishedVideo *video.Video) (r *video.BaseResp, err error) {
+	var _args video.VideoServicePublishVideoArgs
+	_args.PublishedVideo = publishedVideo
+	var _result video.VideoServicePublishVideoResult
+	if err = p.c.Call(ctx, "PublishVideo", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
