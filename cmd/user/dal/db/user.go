@@ -144,13 +144,20 @@ func UpdateUser(ctx context.Context, req *user.UpdateUserRequest) error {
 
 func QueryFollowRelation(ctx context.Context, users []*User, userId int64) ([]bool, error) {
 	isFollowList := make([]bool, len(users))
-	for i, user := range users {
-		var temp int64 = 0
-		DB.WithContext(ctx).Model(&Follower{}).Where("user_id = ? and follower_id = ?", user.ID, userId).Count(&temp)
-		if temp > 0 {
-			isFollowList[i] = true
-		} else {
+	if userId == constants.NotLogin {
+		for i := 0; i < len(users); i++ {
 			isFollowList[i] = false
+		}
+
+	} else {
+		for i, user := range users {
+			var temp int64 = 0
+			DB.WithContext(ctx).Model(&Follower{}).Where("user_id = ? and follower_id = ?", user.ID, userId).Count(&temp)
+			if temp > 0 {
+				isFollowList[i] = true
+			} else {
+				isFollowList[i] = false
+			}
 		}
 	}
 	return isFollowList, nil

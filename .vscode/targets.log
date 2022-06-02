@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed Jun  1 09:31:05 2022
+# Make data base, printed on Thu Jun  2 20:52:16 2022
 
 # Variables
 
@@ -43,7 +43,7 @@ GDMSESSION = ubuntu
 # environment
 XMODIFIERS = @im=ibus
 # makefile
-CURDIR := /home/yang/douyin
+CURDIR := /home/yang/studygo/douyin
 # makefile
 SHELL = /bin/sh
 # environment
@@ -51,7 +51,7 @@ VSCODE_NLS_CONFIG = {"locale":"zh-cn","availableLanguages":{"*":"zh-cn"},"_langu
 # environment
 _ = /usr/share/code/code
 # environment
-JOURNAL_STREAM = 8:39921
+JOURNAL_STREAM = 8:34757
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # makefile
@@ -73,7 +73,7 @@ DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-MANAGERPID = 1072
+MANAGERPID = 1030
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -91,7 +91,7 @@ GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-SESSION_MANAGER = local/yang-XPS:@/tmp/.ICE-unix/1786,unix/yang-XPS:/tmp/.ICE-unix/1786
+SESSION_MANAGER = local/yang-XPS:@/tmp/.ICE-unix/1370,unix/yang-XPS:/tmp/.ICE-unix/1370
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -103,7 +103,7 @@ VSCODE_LOG_STACK = false
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-INVOCATION_ID = fcad0102984548e19a42f2cc60eb0e7b
+INVOCATION_ID = e375e2feef6b4e80a88cedb20af0ae6d
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -113,7 +113,7 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 5072
+GIO_LAUNCHED_DESKTOP_FILE_PID = 51956
 # automatic
 %F = $(notdir $%)
 # environment
@@ -121,11 +121,11 @@ DISPLAY = :0
 # environment
 VSCODE_PIPE_LOGGING = true
 # environment
-PWD = /home/yang/douyin
+PWD = /home/yang/studygo/douyin
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 1739
+SSH_AGENT_PID = 1327
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -163,7 +163,7 @@ SHLVL = 0
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-41edde42-b4a2-4a31-9f48-ebea5d58e773.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-ce371829-a3df-41b0-965b-326e5ba6bb4a.sock
 # default
 MAKE_VERSION := 4.2.1
 # environment
@@ -201,6 +201,8 @@ GDK_BACKEND = x11
 # environment
 LC_PAPER = en_US.UTF-8
 # environment
+NO_AT_BRIDGE = 1
+# environment
 QT_ACCESSIBILITY = 1
 # default
 MAKEFILES := 
@@ -233,9 +235,9 @@ LC_ADDRESS = en_US.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 5072
+VSCODE_PID = 51956
 # variable set hash-table stats:
-# Load=111/1024=11%, Rehash=0, Collisions=19/133=14%
+# Load=112/1024=11%, Rehash=0, Collisions=19/134=14%
 
 # Pattern-specific Variable Values
 
@@ -243,9 +245,9 @@ VSCODE_PID = 5072
 
 # Directories
 
-# . (device 66314, inode 1051979): 15 files, no impossibilities.
+# . (device 66314, inode 1610): 17 files, no impossibilities.
 
-# 15 files, no impossibilities in 1 directories.
+# 17 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -280,7 +282,6 @@ makefile:
 #  Modification time never checked.
 #  File has not been updated.
 
- 
 # Not a target:
 GNUmakefile:
 #  Implicit rule search has been done.
@@ -295,13 +296,14 @@ GNUmakefile:
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
+ 
 
-# strcache buffers: 1 (0) / strings = 23 / storage = 190 B / avg = 8 B
-# current buf: size = 8162 B / used = 190 B / count = 23 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 25 / storage = 212 B / avg = 8 B
+# current buf: size = 8162 B / used = 212 B / count = 25 / avg = 8 B
 
-# strcache performance: lookups = 26 / hit rate = 11%
+# strcache performance: lookups = 28 / hit rate = 10%
 # hash-table stats:
-# Load=23/8192=0%, Rehash=0, Collisions=1/26=4%
-# Finished Make data base on Wed Jun  1 09:31:05 2022
+# Load=25/8192=0%, Rehash=0, Collisions=1/28=4%
+# Finished Make data base on Thu Jun  2 20:52:16 2022
 
  

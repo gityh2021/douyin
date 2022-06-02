@@ -16,7 +16,7 @@ const (
 	VideoServiceName          = "video"
 	UserServiceName           = "user"
 	EtcdAddress               = "139.224.195.12:2379"
-	PlayURL                   = "http://192.168.1.3:8080/videos/"
+	PlayURL                   = "http://127.0.0.1:8080/videos/"
 	CoverURL                  = ""
 	CPURateLimit      float64 = 80.0
 	DefaultLimit              = 10
@@ -25,6 +25,7 @@ const (
 	QueryFollowerList int32   = 3
 	RelationAdd       int32   = 1
 	RelationDel       int32   = 2
+	NotLogin          int64   = -1
 )
 
 // const (
