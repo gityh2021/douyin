@@ -1,6 +1,7 @@
 package db
 
 import (
+	"douyin/v1/cmd/video/dal/db"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	gormopentracing "gorm.io/plugin/opentracing"
@@ -27,10 +28,10 @@ func Init() {
 	}
 
 	m := DB.Migrator()
-	if m.HasTable(&User{}) {
+	if m.HasTable(&db.User{}) {
 		return
 	}
-	if err = m.CreateTable(&User{}); err != nil {
+	if err = m.CreateTable(&db.User{}); err != nil {
 		panic(err)
 	}
 }

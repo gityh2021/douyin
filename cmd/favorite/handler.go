@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"douyin/v1/cmd/favorite/pack"
-	"douyin/v1/cmd/favorite/service"
+	"douyin/v1/cmd/video/service"
 	"douyin/v1/kitex_gen/favorite"
 	"douyin/v1/pkg/errno"
 )

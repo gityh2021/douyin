@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"douyin/v1/cmd/favorite/dal/db"
 	"douyin/v1/cmd/favorite/pack"
+	"douyin/v1/cmd/video/dal/db"
 	"douyin/v1/kitex_gen/favorite"
 )
 

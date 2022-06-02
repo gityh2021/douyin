@@ -36,10 +36,4 @@ func Init() {
 		panic(err)
 	}
 
-	if m.HasTable(&Video_Comments{}) {
-		return
-	}
-	if err = m.CreateTable(&Video_Comments{}); err != nil {
-		panic(err)
-	}
 }

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"douyin/v1/cmd/favorite/dal/db"
+	"douyin/v1/cmd/video/dal/db"
 )
 
 func (s *QueryFavoriteService) FavoriteByUser(userId int64, videoId int64) error {
