@@ -44,6 +44,10 @@ func QueryFollowerById(ctx context.Context, userId int64) ([]*int64, error) {
 }
 
 func DealWithFollowRelation(ctx context.Context, req *user.UpdateUserRequest) error {
+	if req.UserId == constants.NotLogin {
+		return nil
+	}
+
 	if req.ActionType == constants.RelationAdd {
 		// 添加关注
 		return DB.WithContext(ctx).Create(&Follower{UserID: req.ToUserId, FollowerID: req.UserId}).Error

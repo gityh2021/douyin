@@ -25,6 +25,7 @@ const (
 	QueryFollowerList int32   = 3
 	RelationAdd       int32   = 1
 	RelationDel       int32   = 2
+	NotLogin          int64   = -1
 )
 
 // const (
