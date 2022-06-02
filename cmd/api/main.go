@@ -20,22 +20,6 @@ func Init() {
 }
 
 func main() {
-<<<<<<< HEAD
-	//r := gin.New()
-	//v1 := r.Group("/douyin")
-	//video := v1.Group("/publish")
-	//video.GET("/list", handlers.GetMyPublishVideoList)
-	//if err := http.ListenAndServe(":8080", r); err != nil {
-	//	klog.Fatal(err)
-	//}
-	r := gin.New()
-	v1 := r.Group("/favorite")
-	v1.GET("/action", handlers.FavoriteByUser)
-	if err := http.ListenAndServe(":8080", r); err != nil {
-		klog.Fatal(err)
-	}
-
-=======
 	Init()
 	r := gin.Default()
 	authMiddleware, _ := jwt.New(&jwt.GinJWTMiddleware{
@@ -68,7 +52,7 @@ func main() {
 			user_id, res := rpc.QueryUser(context.Background(), &user.CheckUserRequest{Username: loginVar2.UserName, Password: loginVar2.PassWord})
 			handlers.SendLoginResponse(c, res, user_id, loginVar2.UserName, token, expire)
 		},
-		TokenLookup:   "header: Authorization, query: token, cookie: jwt",
+		TokenLookup:   "header: Authorization, query: token, cookie: jwt, postform: token",
 		TokenHeadName: "Bearer",
 		TimeFunc:      time.Now,
 	})
@@ -79,13 +63,15 @@ func main() {
 	// user1 := v1.Group("/user")
 	v1.POST("/user/login/", authMiddleware.LoginHandler)
 	v1.POST("/user/register/", handlers.Register, authMiddleware.LoginHandler) // 注册后自动登录
+	v1.GET("/feed", handlers.GetVideoFeed)
 	// ----------------------------------------------
 	//user1.Use(authMiddleware.MiddlewareFunc())
 	v1.Use(authMiddleware.MiddlewareFunc())
 	v1.GET("/user/", handlers.GetUserInfo)
-	v1.GET("/feed", handlers.GetVideoFeed)
-	v1.GET("/publish/list/", handlers.GetMyPublishVideoList)
+	v1.GET("/publish/list", handlers.GetMyPublishVideoList)
 	v1.POST("/publish/action/", handlers.PublishVideo)
+	v1.POST("/favorite/action/", handlers.FavoriteByUser)
+	v1.GET("/favorite/list/", handlers.GetFavoriteLIst)
 
 	// user2 := v1.Group("/relation")
 	// v1.Use(authMiddleware.MiddlewareFunc())
@@ -96,5 +82,4 @@ func main() {
 		klog.Fatal(err)
 	}
 	r.Run()
->>>>>>> combined
 }

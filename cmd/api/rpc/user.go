@@ -76,7 +76,7 @@ func QueryUser(ctx context.Context, req *user.CheckUserRequest) (int64, errno.Er
 	return resp.UserId, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
 }
 
-// InfoGet get user info
+// InfoGetUser get user info
 func InfoGetUser(ctx context.Context, req *user.InfoGetUserRequest) (*user.User, error) {
 	resp, err := userClient.InfoGetUser(ctx, req)
 	if err != nil {
@@ -110,4 +110,20 @@ func UpdateUser(ctx context.Context, req *user.UpdateUserRequest) error {
 		return errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
 	}
 	return nil
+}
+
+// GetUsersByIds get user list by id list
+func GetUsersByIds(ctx context.Context, idList []int64, currentUserId int64) ([]*user.User, error) {
+	req := user.GetUserInfoListRequest{
+		UserIds: idList,
+		UserId:  currentUserId,
+	}
+	resp, err := userClient.GetUserInfoList(ctx, &req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.BaseResp.StatusCode != 0 {
+		return nil, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
+	}
+	return resp.Users, nil
 }

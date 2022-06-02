@@ -39,8 +39,9 @@ struct FavoriteListRequest {
    1:i64 user_id
    2:string token
 }
+
 struct FavoriteListResponse {
-      1:BaseResponse base_resp
+      1:BaseResp base_resp
       2:list<Video> video_list
 }
 
@@ -48,6 +49,6 @@ service VideoService{
     PublishListResponse GetPublishListByUser(1:i64 user_id)
     VideoFeedResponse GetVideosByLastTime(1:i64 last_time)
     BaseResp PublishVideo(1:Video published_video)
-    BaseResponse FavoriteByUser(1:FavoriteActionRequest request)
+    BaseResp FavoriteByUser(1:FavoriteActionRequest request)
     FavoriteListResponse GetFavoriteListBYUser(1:FavoriteListRequest request)
 }

@@ -3,7 +3,7 @@ package handlers
 import (
 	"context"
 	"douyin/v1/cmd/api/rpc"
-	"douyin/v1/kitex_gen/favorite"
+	"douyin/v1/kitex_gen/video"
 	"douyin/v1/pkg/errno"
 	"github.com/gin-gonic/gin"
 	"strconv"
@@ -22,7 +22,7 @@ func GetFavoriteLIst(c *gin.Context) {
 		return
 	}
 	userId, err := strconv.ParseInt(userIdStr, 10, 64)
-	request := favorite.NewFavoriteListRequest()
+	request := video.NewFavoriteListRequest()
 	request.UserId = userId
 	request.Token = token
 	resp, err := rpc.GetFavoriteList(context.Background(), request)

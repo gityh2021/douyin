@@ -2,7 +2,9 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"gorm.io/gorm"
+	"time"
 )
 
 type Video struct {
@@ -17,10 +19,23 @@ type Video struct {
 	Title         string `json:"title"`
 }
 
-func MGetVideos(ctx context.Context, userId int64) ([]*Video, error) {
+func MGetVideosByUserID(ctx context.Context, userId int64) ([]*Video, error) {
 	res := make([]*Video, 0)
 	if err := DB.WithContext(ctx).Where("author_id = ?", userId).Find(&res).Error; err != nil {
 		return nil, err
 	}
 	return res, nil
+}
+
+func MGetVideosByTime(ctx context.Context, lastTime int64) ([]*Video, error) {
+	fmt.Println(time.Unix(lastTime, 0).Format("2006-01-02 15:04:05"))
+	res := make([]*Video, 0)
+	if err := DB.WithContext(ctx).Where("created_at < ?", time.Unix(lastTime, 0).Format("2006-01-02 15:04:05")).Order("created_at desc").Limit(30).Find(&res).Error; err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func MPublishVideo(ctx context.Context, video *Video) error {
+	return DB.WithContext(ctx).Create(&video).Error
 }

@@ -8,7 +8,7 @@ type Author struct {
 	IsFollow      bool   `json:"IsFollow"`
 }
 
-type Video struct {
+type VideoVo struct {
 	ID            int64  `json:"id"`
 	Author        Author `json:"author"`
 	PlayURL       string `json:"play_url"`

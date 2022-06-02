@@ -2,42 +2,30 @@ package db
 
 import (
 	"context"
-	"douyin/v1/cmd/favorite/dal/db"
-	"fmt"
 	"gorm.io/gorm"
 )
 
-type User struct {
+type Favorite struct {
 	gorm.Model
-	ID            int64   `gorm:"primarykey" json:"id"`
-	Name          string  `gorm:"not null" json:"name"`
-	FollowCount   int64   `gorm:"default:0" json:"follow_count"`
-	FollowerCount int64   `gorm:"default:0" json:"follower_count"`
-	IsFollow      bool    `json:"is_follow"`
-	FavoriteVideo []Video `gorm:"many2many:users_videos;" json:"favorite_video"`
+	ID      int64 `gorm:"primarykey" json:"id"`
+	UserId  int64 `gorm:"default:0" json:"user_id"`
+	VideoId int64 `gorm:"default:0" json:"video_id"`
 }
 
 func MGetFavoriteList(ctx context.Context, userId int64) ([]*Video, error) {
-	res := make([]*Video, 0)
-	if err := db.DB.WithContext(ctx).Model(User{}).Where("userId = ?", userId).Association("videos").Find(&res); err != nil {
-		fmt.Println(err)
+	videos := make([]*Video, 0)
+	ids := make([]int64, 0)
+	if err := DB.WithContext(ctx).Where("id in (?)",
+		DB.WithContext(ctx).Table("favorites").Select("video_id").Where("user_id = ?", userId).Find(&ids)).Find(&videos).Error; err != nil {
 		return nil, err
 	}
-	return res, nil
-}
-
-type FavoriteVideoParam struct {
-	UserId  int64
-	VideoId int64
+	return videos, nil
 }
 
 func MPostFavoriteAction(ctx context.Context, userId int64, videoId int64) error {
-	favoriteInput := FavoriteVideoParam{
+	favorite := Favorite{
 		UserId:  userId,
 		VideoId: videoId,
 	}
-	if err := db.DB.WithContext(ctx).Model(User{}).Association("videos").Append(&favoriteInput); err != nil {
-		return err
-	}
-	return nil
+	return DB.WithContext(ctx).Create(&favorite).Error
 }

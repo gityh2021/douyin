@@ -14,12 +14,9 @@ import (
 )
 
 func PublishVideo(c *gin.Context) {
-	// todo 根据token解析出userId
 	claims := jwt.ExtractClaims(c)
 	userID := int64(claims[constants.IdentityKey].(float64))
-
-	// token := c.Query("token")
-	titleStr := c.Query("title")
+	titleStr := c.PostForm("title")
 	if titleStr == "" {
 		SendCreateVideoResponse(c, errno.ParamErr)
 		return

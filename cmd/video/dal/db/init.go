@@ -29,10 +29,16 @@ func Init() {
 	}
 
 	m := DB.Migrator()
-	if m.HasTable(&Video{}) {
+	if !m.HasTable(&Video{}) {
+		if err = m.CreateTable(&Video{}); err != nil {
+			panic(err)
+		}
+	}
+
+	if m.HasTable(&Favorite{}) {
 		return
 	}
-	if err = m.CreateTable(&Video{}); err != nil {
+	if err = m.CreateTable(&Favorite{}); err != nil {
 		panic(err)
 	}
 

@@ -35,14 +35,14 @@ func (s *VideoServiceImpl) GetVideosByLastTime(ctx context.Context, lastTime int
 		response.SetBaseResp(pack.BuildBaseResp(errno.ParamErr))
 		return response, nil
 	}
-	videos, next_time, err := service.NewQueryVideoService(ctx).GetVideoFeed(lastTime)
+	videos, nextTime, err := service.NewQueryVideoService(ctx).GetVideoFeed(lastTime)
 	if err != nil {
 		response.SetBaseResp(pack.BuildBaseResp(err))
 		return response, nil
 	}
 	response.SetBaseResp(pack.BuildBaseResp(errno.Success))
 	response.SetVideoList(videos)
-	response.SetNextTime(next_time.Unix())
+	response.SetNextTime(nextTime.Unix())
 	return response, nil
 }
 
@@ -55,4 +55,38 @@ func (s *VideoServiceImpl) PublishVideo(ctx context.Context, publishedVideo *vid
 		return pack.BuildBaseResp(errno.ServiceErr), nil
 	}
 	return pack.BuildBaseResp(errno.Success), nil
+}
+
+// FavoriteByUser implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) FavoriteByUser(ctx context.Context, request *video.FavoriteActionRequest) (resp *video.BaseResp, err error) {
+	response := new(video.BaseResp)
+	if request.UserId < 0 {
+		response = pack.BuildBaseResp(errno.ParamErr)
+		return response, nil
+	}
+	err = service.NewQueryFavoriteService(ctx).FavoriteByUser(request.UserId, request.VideoId)
+	if err != nil {
+		response = pack.BuildBaseResp(err)
+		return response, nil
+	}
+	response = pack.BuildBaseResp(errno.Success)
+	return response, nil
+}
+
+// GetFavoriteListBYUser implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) GetFavoriteListBYUser(ctx context.Context, request *video.FavoriteListRequest) (resp *video.FavoriteListResponse, err error) {
+	response := new(video.FavoriteListResponse)
+
+	if request.UserId < 0 {
+		response.SetBaseResp(pack.BuildBaseResp(errno.ParamErr))
+		return response, nil
+	}
+	videos, err := service.NewQueryFavoriteService(ctx).GetFavoriteListByUser(request.UserId)
+	if err != nil {
+		response.SetBaseResp(pack.BuildBaseResp(err))
+		return response, nil
+	}
+	response.SetBaseResp(pack.BuildBaseResp(errno.Success))
+	response.SetVideoList(videos)
+	return response, nil
 }

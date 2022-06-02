@@ -20,7 +20,6 @@ func initVideoRpc() {
 	if err != nil {
 		panic(err)
 	}
-
 	c, err := videoservice.NewClient(
 		"video",
 		client.WithMuxConnection(1),                       // mux
@@ -66,4 +65,26 @@ func CreateVideo(ctx context.Context, video *video.Video) error {
 		return errno.NewErrNo(resp.StatusCode, resp.StatusMsg)
 	}
 	return nil
+}
+
+func GetFavoriteList(ctx context.Context, request *video.FavoriteListRequest) ([]*video.Video, error) {
+	resp, err := videoClient.GetFavoriteListBYUser(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	if resp.BaseResp.StatusCode != 0 {
+		return nil, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
+	}
+	return resp.VideoList, nil
+}
+
+func FavoriteByUser(ctx context.Context, request *video.FavoriteActionRequest) (*video.BaseResp, error) {
+	resp, err := videoClient.FavoriteByUser(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, errno.NewErrNo(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
 }

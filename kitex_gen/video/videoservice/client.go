@@ -14,6 +14,8 @@ type Client interface {
 	GetPublishListByUser(ctx context.Context, userId int64, callOptions ...callopt.Option) (r *video.PublishListResponse, err error)
 	GetVideosByLastTime(ctx context.Context, lastTime int64, callOptions ...callopt.Option) (r *video.VideoFeedResponse, err error)
 	PublishVideo(ctx context.Context, publishedVideo *video.Video, callOptions ...callopt.Option) (r *video.BaseResp, err error)
+	FavoriteByUser(ctx context.Context, request *video.FavoriteActionRequest, callOptions ...callopt.Option) (r *video.BaseResp, err error)
+	GetFavoriteListBYUser(ctx context.Context, request *video.FavoriteListRequest, callOptions ...callopt.Option) (r *video.FavoriteListResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -58,4 +60,14 @@ func (p *kVideoServiceClient) GetVideosByLastTime(ctx context.Context, lastTime 
 func (p *kVideoServiceClient) PublishVideo(ctx context.Context, publishedVideo *video.Video, callOptions ...callopt.Option) (r *video.BaseResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.PublishVideo(ctx, publishedVideo)
+}
+
+func (p *kVideoServiceClient) FavoriteByUser(ctx context.Context, request *video.FavoriteActionRequest, callOptions ...callopt.Option) (r *video.BaseResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.FavoriteByUser(ctx, request)
+}
+
+func (p *kVideoServiceClient) GetFavoriteListBYUser(ctx context.Context, request *video.FavoriteListRequest, callOptions ...callopt.Option) (r *video.FavoriteListResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetFavoriteListBYUser(ctx, request)
 }

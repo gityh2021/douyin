@@ -19,7 +19,6 @@ import (
 	"douyin/v1/kitex_gen/video"
 	"douyin/v1/pkg/errno"
 	"errors"
-	"time"
 )
 
 // BuildBaseResp build baseResp from error
@@ -38,5 +37,5 @@ func BuildBaseResp(err error) *video.BaseResp {
 }
 
 func baseResp(err errno.ErrNo) *video.BaseResp {
-	return &video.BaseResp{StatusCode: err.ErrCode, StatusMsg: err.ErrMsg, ServiceTime: time.Now().Unix()}
+	return &video.BaseResp{StatusCode: err.ErrCode, StatusMsg: err.ErrMsg}
 }

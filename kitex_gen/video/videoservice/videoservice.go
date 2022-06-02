@@ -19,9 +19,11 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "VideoService"
 	handlerType := (*video.VideoService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"GetPublishListByUser": kitex.NewMethodInfo(getPublishListByUserHandler, newVideoServiceGetPublishListByUserArgs, newVideoServiceGetPublishListByUserResult, false),
-		"GetVideosByLastTime":  kitex.NewMethodInfo(getVideosByLastTimeHandler, newVideoServiceGetVideosByLastTimeArgs, newVideoServiceGetVideosByLastTimeResult, false),
-		"PublishVideo":         kitex.NewMethodInfo(publishVideoHandler, newVideoServicePublishVideoArgs, newVideoServicePublishVideoResult, false),
+		"GetPublishListByUser":  kitex.NewMethodInfo(getPublishListByUserHandler, newVideoServiceGetPublishListByUserArgs, newVideoServiceGetPublishListByUserResult, false),
+		"GetVideosByLastTime":   kitex.NewMethodInfo(getVideosByLastTimeHandler, newVideoServiceGetVideosByLastTimeArgs, newVideoServiceGetVideosByLastTimeResult, false),
+		"PublishVideo":          kitex.NewMethodInfo(publishVideoHandler, newVideoServicePublishVideoArgs, newVideoServicePublishVideoResult, false),
+		"FavoriteByUser":        kitex.NewMethodInfo(favoriteByUserHandler, newVideoServiceFavoriteByUserArgs, newVideoServiceFavoriteByUserResult, false),
+		"GetFavoriteListBYUser": kitex.NewMethodInfo(getFavoriteListBYUserHandler, newVideoServiceGetFavoriteListBYUserArgs, newVideoServiceGetFavoriteListBYUserResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "video",
@@ -91,6 +93,42 @@ func newVideoServicePublishVideoResult() interface{} {
 	return video.NewVideoServicePublishVideoResult()
 }
 
+func favoriteByUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServiceFavoriteByUserArgs)
+	realResult := result.(*video.VideoServiceFavoriteByUserResult)
+	success, err := handler.(video.VideoService).FavoriteByUser(ctx, realArg.Request)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newVideoServiceFavoriteByUserArgs() interface{} {
+	return video.NewVideoServiceFavoriteByUserArgs()
+}
+
+func newVideoServiceFavoriteByUserResult() interface{} {
+	return video.NewVideoServiceFavoriteByUserResult()
+}
+
+func getFavoriteListBYUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServiceGetFavoriteListBYUserArgs)
+	realResult := result.(*video.VideoServiceGetFavoriteListBYUserResult)
+	success, err := handler.(video.VideoService).GetFavoriteListBYUser(ctx, realArg.Request)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newVideoServiceGetFavoriteListBYUserArgs() interface{} {
+	return video.NewVideoServiceGetFavoriteListBYUserArgs()
+}
+
+func newVideoServiceGetFavoriteListBYUserResult() interface{} {
+	return video.NewVideoServiceGetFavoriteListBYUserResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -126,6 +164,26 @@ func (p *kClient) PublishVideo(ctx context.Context, publishedVideo *video.Video)
 	_args.PublishedVideo = publishedVideo
 	var _result video.VideoServicePublishVideoResult
 	if err = p.c.Call(ctx, "PublishVideo", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FavoriteByUser(ctx context.Context, request *video.FavoriteActionRequest) (r *video.BaseResp, err error) {
+	var _args video.VideoServiceFavoriteByUserArgs
+	_args.Request = request
+	var _result video.VideoServiceFavoriteByUserResult
+	if err = p.c.Call(ctx, "FavoriteByUser", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetFavoriteListBYUser(ctx context.Context, request *video.FavoriteListRequest) (r *video.FavoriteListResponse, err error) {
+	var _args video.VideoServiceGetFavoriteListBYUserArgs
+	_args.Request = request
+	var _result video.VideoServiceGetFavoriteListBYUserResult
+	if err = p.c.Call(ctx, "GetFavoriteListBYUser", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
