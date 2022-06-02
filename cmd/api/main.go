@@ -20,6 +20,22 @@ func Init() {
 }
 
 func main() {
+<<<<<<< HEAD
+	//r := gin.New()
+	//v1 := r.Group("/douyin")
+	//video := v1.Group("/publish")
+	//video.GET("/list", handlers.GetMyPublishVideoList)
+	//if err := http.ListenAndServe(":8080", r); err != nil {
+	//	klog.Fatal(err)
+	//}
+	r := gin.New()
+	v1 := r.Group("/favorite")
+	v1.GET("/action", handlers.FavoriteByUser)
+	if err := http.ListenAndServe(":8080", r); err != nil {
+		klog.Fatal(err)
+	}
+
+=======
 	Init()
 	r := gin.Default()
 	authMiddleware, _ := jwt.New(&jwt.GinJWTMiddleware{
@@ -80,4 +96,5 @@ func main() {
 		klog.Fatal(err)
 	}
 	r.Run()
+>>>>>>> combined
 }
