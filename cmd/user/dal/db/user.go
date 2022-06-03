@@ -109,6 +109,15 @@ func UpdateUser(ctx context.Context, req *user.UpdateUserRequest) error {
 	var user1 User
 	var user2 User
 	if req.ActionType == constants.RelationAdd {
+		var cnt int64 = 0
+		err := DB.WithContext(ctx).Model(&Follower{}).Where("user_id = ? and follower_id = ?", req.ToUserId, req.UserId).Count(&cnt).Error
+		if err != nil {
+			return err
+		}
+		if cnt > 0 {
+			return nil
+		}
+
 		if err = DB.WithContext(ctx).Where("id = ?", req.UserId).First(&user1).Error; err != nil {
 			return err
 		}
