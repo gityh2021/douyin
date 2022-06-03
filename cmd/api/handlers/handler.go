@@ -31,13 +31,9 @@ type LoginResponse struct {
 }
 
 type UserInfoResponse struct {
-	Code          int32  `json:"status_code"`
-	Message       string `json:"status_msg"`
-	UserId        int64  `json:"id"`
-	UserName      string `json:"name"`
-	FollowCount   int64  `json:"follow_count"`
-	FollowerCount int64  `json:"follower_count"`
-	IsFollow      bool   `json:"is_follow"`
+	Code    int32       `json:"status_code"`
+	Message string      `json:"status_msg"`
+	User    interface{} `json:"user"`
 }
 
 type UserListResponse struct {
@@ -70,16 +66,13 @@ func SendLoginResponse(c *gin.Context, err error, userId int64, userName string,
 }
 
 // SendUserInfoResponse pack response
-func SendUserInfoResponse(c *gin.Context, err error, userId int64, userName string, followCount int64, followerCount int64, isFollow bool) {
+func SendUserInfoResponse(c *gin.Context, err error, user *user.User) {
 	Err := errno.ConvertErr(err)
+	users := map[string]interface{}{"user": user}
 	c.JSON(http.StatusOK, UserInfoResponse{
-		Code:          Err.ErrCode,
-		Message:       Err.ErrMsg,
-		UserId:        userId,
-		UserName:      userName,
-		FollowCount:   followCount,
-		FollowerCount: followerCount,
-		IsFollow:      isFollow,
+		Code:    Err.ErrCode,
+		Message: Err.ErrMsg,
+		User:    users["user"],
 	})
 }
 
