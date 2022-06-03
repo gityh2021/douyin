@@ -21,7 +21,14 @@ func (s *QueryVideoService) GetPublishList(userId int64) ([]*video.Video, error)
 	if err != nil {
 		return nil, err
 	}
-	return pack.Videos(videos), nil
+	if len(videos) == 0 {
+		return pack.Videos(videos), nil
+	}
+	newVideos, err := NewQueryFavoriteService(s.ctx).AppendFavorite(videos, userId)
+	if err != nil {
+		return nil, err
+	}
+	return pack.Videos(newVideos), nil
 }
 
 func (s *QueryVideoService) GetVideoFeed(lastTime int64, userId int64) ([]*video.Video, time.Time, error) {
@@ -32,5 +39,9 @@ func (s *QueryVideoService) GetVideoFeed(lastTime int64, userId int64) ([]*video
 	if len(videos) == 0 {
 		return pack.Videos(videos), time.Now(), nil
 	}
-	return pack.Videos(videos), videos[0].CreatedAt, nil
+	newVideos, err := NewQueryFavoriteService(s.ctx).AppendFavorite(videos, userId)
+	if err != nil {
+		return nil, time.Now(), err
+	}
+	return pack.Videos(newVideos), videos[0].CreatedAt, nil
 }

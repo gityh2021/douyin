@@ -14,10 +14,20 @@ type Comment struct {
 }
 
 func MPostCommentAction(ctx context.Context, comment *Comment) error {
-	return DB.WithContext(ctx).Create(&comment).Error
+	if err := DB.WithContext(ctx).Create(&comment).Error; err != nil {
+		return err
+	}
+	return DB.WithContext(ctx).Model(&Video{}).Where("id = ?", comment.VideoId).Update("comment_count", gorm.Expr("comment_count + ?", 1)).Error
 }
 
 func MDeleteComment(ctx context.Context, commentId int64) error {
+	videoId := 0
+	if err := DB.WithContext(ctx).Model(&Comment{}).Select("video_id").Where("id = ?", commentId).Find(&videoId).Error; err != nil {
+		return err
+	}
+	if err := DB.WithContext(ctx).Model(&Video{}).Where("id = ?", videoId).Update("comment_count", gorm.Expr("comment_count - ?", 1)).Error; err != nil {
+		return err
+	}
 	return DB.WithContext(ctx).Where("id = ?", commentId).Delete(&Comment{}).Error
 }
 

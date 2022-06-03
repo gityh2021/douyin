@@ -22,3 +22,26 @@ func (s *QueryFavoriteService) GetFavoriteListByUser(userId int64) ([]*video.Vid
 	}
 	return pack.Videos(videos), nil
 }
+
+func (s *QueryFavoriteService) AppendFavorite(ms []*db.Video, userId int64) ([]*db.Video, error) {
+	if len(ms) == 0 {
+		return ms, nil
+	}
+	videoIds := make([]*int64, 0)
+	for _, m := range ms {
+		videoIds = append(videoIds, &m.ID)
+	}
+	ids, err := db.MGetFavoriteIds(s.ctx, videoIds, userId)
+	if err != nil {
+		return ms, err
+	}
+	for _, m := range ms {
+		for _, id := range ids {
+			if m.ID == *id {
+				m.IsFavorite = true
+				break
+			}
+		}
+	}
+	return ms, nil
+}

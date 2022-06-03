@@ -88,3 +88,25 @@ func FavoriteByUser(ctx context.Context, request *video.FavoriteActionRequest) (
 	}
 	return resp, nil
 }
+
+func PostComment(ctx context.Context, request *video.CommentActionRequest) (*video.CommentActionResponse, error) {
+	resp, err := videoClient.PostComment(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	if resp.BaseResp.StatusCode != 0 {
+		return nil, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
+	}
+	return resp, nil
+}
+
+func GetCommentsByVideoId(ctx context.Context, videoId int64) ([]*video.Comment, error) {
+	resp, err := videoClient.GetCommentListByVideo(ctx, videoId)
+	if err != nil {
+		return nil, err
+	}
+	if resp.BaseResp.StatusCode != 0 {
+		return nil, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
+	}
+	return resp.CommentList, nil
+}

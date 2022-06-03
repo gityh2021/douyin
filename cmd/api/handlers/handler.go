@@ -145,3 +145,33 @@ func SendCreateVideoResponse(c *gin.Context, err error) {
 		Message: Err.ErrMsg,
 	})
 }
+
+type PostCommentResponse struct {
+	Code    int32       `json:"status_code"`
+	Message string      `json:"status_msg"`
+	Data    interface{} `json:"comment"`
+}
+
+func SendPostCommentResponse(c *gin.Context, data interface{}, err error) {
+	Err := errno.ConvertErr(err)
+	c.JSON(http.StatusOK, PostCommentResponse{
+		Code:    Err.ErrCode,
+		Message: Err.ErrMsg,
+		Data:    data,
+	})
+}
+
+type QueryCommentResponse struct {
+	Code    int32       `json:"status_code"`
+	Message string      `json:"status_msg"`
+	Data    interface{} `json:"comment_list"`
+}
+
+func SendQueryCommentResponse(c *gin.Context, data interface{}, err error) {
+	Err := errno.ConvertErr(err)
+	c.JSON(http.StatusOK, QueryCommentResponse{
+		Code:    Err.ErrCode,
+		Message: Err.ErrMsg,
+		Data:    data,
+	})
+}

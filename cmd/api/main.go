@@ -52,7 +52,7 @@ func main() {
 			user_id, res := rpc.QueryUser(context.Background(), &user.CheckUserRequest{Username: loginVar2.UserName, Password: loginVar2.PassWord})
 			handlers.SendLoginResponse(c, res, user_id, loginVar2.UserName, token, expire)
 		},
-		TokenLookup:   "header: Authorization, query: token, cookie: jwt, postform: token",
+		TokenLookup:   "header: Authorization, query: token, cookie: jwt",
 		TokenHeadName: "Bearer",
 		TimeFunc:      time.Now,
 	})
@@ -64,15 +64,26 @@ func main() {
 	v1.POST("/user/login/", authMiddleware.LoginHandler)
 	v1.POST("/user/register/", handlers.Register, authMiddleware.LoginHandler) // 注册后自动登录
 	v1.GET("/feed", handlers.GetVideoFeed)
-	// ----------------------------------------------
+	v1.POST("/publish/action/", func(c *gin.Context) {
+		token := c.PostForm("token")
+		c.Header("Authorization", token)
+		c.Request.Header.Add("Authorization", token)
+		//这里注意，看你是要加到c.Header还是c.Request.Header里，注释掉不要的一个即可
+		//fmt.Println("c.GetHeader 的结果是 " + c.GetHeader("Authorization"))
+		//fmt.Println("c.Request.Header.Get的结果是" + c.Request.Header.Get("Authorization"))
+		newUrl := "/douyin/publish/action2/" //重定向的url
+		c.Request.URL.Path = newUrl
+		r.HandleContext(c)
+	})
 	//user1.Use(authMiddleware.MiddlewareFunc())
 	v1.Use(authMiddleware.MiddlewareFunc())
 	v1.GET("/user/", handlers.GetUserInfo)
 	v1.GET("/publish/list", handlers.GetMyPublishVideoList)
-	v1.POST("/publish/action/", handlers.PublishVideo)
+	v1.POST("/publish/action2/", handlers.PublishVideo)
 	v1.POST("/favorite/action/", handlers.FavoriteByUser)
 	v1.GET("/favorite/list/", handlers.GetFavoriteLIst)
-
+	v1.POST("/comment/action/", handlers.PostComment)
+	v1.GET("/comment/list/", handlers.QueryComments)
 	// user2 := v1.Group("/relation")
 	// v1.Use(authMiddleware.MiddlewareFunc())
 	v1.GET("/relation/follow/list/", handlers.GetFollowList)

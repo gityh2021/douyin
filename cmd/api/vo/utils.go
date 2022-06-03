@@ -36,6 +36,30 @@ func PackVideoVos(users []*user.User, videos []*video.Video) []*VideoVo {
 	return videoVos
 }
 
+func PackCommentVos(users []*user.User, comments []*video.Comment) []*CommentVo {
+	userDict := make(map[int64]*user.User)
+	for i := 0; i < len(users); i++ {
+		userDict[users[i].GetId()] = users[i]
+	}
+	commentVos := make([]*CommentVo, len(comments))
+	for i := 0; i < len(comments); i++ {
+		commentVo := CommentVo{
+			ID: comments[i].Id,
+			Author: Author{
+				ID:            userDict[comments[i].UserId].Id,
+				Name:          userDict[comments[i].UserId].Name,
+				FollowCount:   userDict[comments[i].UserId].FollowCount,
+				FollowerCount: userDict[comments[i].UserId].FollowerCount,
+				IsFollow:      userDict[comments[i].UserId].IsFollow,
+			},
+			Content:    comments[i].Content,
+			CreateDate: comments[i].CreateDate,
+		}
+		commentVos[i] = &commentVo
+	}
+	return commentVos
+}
+
 func GetUserIdFromToken(c *gin.Context) int64 {
 	claims := jwt.ExtractClaims(c)
 	if claims[constants.IdentityKey] == nil {

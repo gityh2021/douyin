@@ -56,9 +56,8 @@ struct CommentActionResponse {
       2:Comment comment
 }
 struct CommentActionRequest {
-      1:BaseResp base_resp
-      2:Comment comment
-      3:i64 action_type
+      1:Comment comment
+      2:i64 action_type
 }
 service VideoService{
     PublishListResponse GetPublishListByUser(1:i64 user_id)

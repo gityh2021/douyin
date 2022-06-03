@@ -69,6 +69,8 @@ func GetVideoFeed(c *gin.Context) {
 		SendQueryByLastTimeResponse(c, err, nil, nextTime)
 		return
 	}
+
+	// 将Author信息封装到VideoVo中
 	if len(videos) == 0 {
 		SendQueryByLastTimeResponse(c, errno.Success, videos, nextTime)
 		return
@@ -85,5 +87,4 @@ func GetVideoFeed(c *gin.Context) {
 		videoVos := vo.PackVideoVos(users, videos)
 		SendQueryByLastTimeResponse(c, errno.Success, videoVos, nextTime)
 	}
-
 }

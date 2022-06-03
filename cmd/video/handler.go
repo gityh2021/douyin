@@ -93,12 +93,34 @@ func (s *VideoServiceImpl) GetFavoriteListBYUser(ctx context.Context, userId int
 
 // GetCommentListByVideo implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) GetCommentListByVideo(ctx context.Context, videoId int64) (resp *video.CommentListResponse, err error) {
-	// TODO: Your code here...
-	return
+	response := new(video.CommentListResponse)
+	comments, err := service.NewCommentService(ctx).QueryCommentByVideoId(videoId)
+	if err != nil {
+		response.SetBaseResp(pack.BuildBaseResp(err))
+		return response, nil
+	}
+	response.SetBaseResp(pack.BuildBaseResp(errno.Success))
+	response.SetCommentList(comments)
+	return response, nil
 }
 
 // PostComment implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PostComment(ctx context.Context, commentActionRequest *video.CommentActionRequest) (resp *video.CommentActionResponse, err error) {
-	// TODO: Your code here...
-	return
+	response := new(video.CommentActionResponse)
+	if commentActionRequest.ActionType == 1 {
+		comment, err := service.NewCommentService(ctx).PostComment(commentActionRequest.Comment)
+		if err != nil {
+			response.SetBaseResp(pack.BuildBaseResp(err))
+			return response, nil
+		}
+		response.SetBaseResp(pack.BuildBaseResp(errno.Success))
+		response.SetComment(comment)
+		return response, nil
+	} else {
+		if err := service.NewCommentService(ctx).DeleteComment(commentActionRequest.Comment.Id); err != nil {
+			response.SetBaseResp(pack.BuildBaseResp(err))
+		}
+		response.SetBaseResp(pack.BuildBaseResp(errno.Success))
+		return response, nil
+	}
 }
