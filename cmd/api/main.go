@@ -53,7 +53,7 @@ func main() {
 			user_id, res := rpc.QueryUser(context.Background(), &user.CheckUserRequest{Username: loginVar2.UserName, Password: loginVar2.PassWord})
 			handlers.SendLoginResponse(c, res, user_id, loginVar2.UserName, token, expire)
 		},
-		TokenLookup:   "header: Authorization, query: token, cookie: jwt",
+		TokenLookup:   "header: Authorization, query: token, cookie: jwt, postform: token",
 		TokenHeadName: "Bearer",
 		TimeFunc:      time.Now,
 		FilteredURL:   "/douyin/feed", // 设置你需要跳过认证的url,目前比较粗糙,是string而不是string数组,我们项目应该只需要一条URL吧
@@ -62,21 +62,9 @@ func main() {
 	r.StaticFS("/cover", http.Dir("./cmd/api/static/images"))
 	r.StaticFS("/videos", http.Dir("./cmd/api/static/videos"))
 	v1 := r.Group("/douyin")
-	// user1 := v1.Group("/user")
 	v1.POST("/user/login/", authMiddleware.LoginHandler)
 	v1.POST("/user/register/", handlers.Register, authMiddleware.LoginHandler) // 注册后自动登录
-	// v1.GET("/feed", handlers.GetVideoFeed)
-	// v1.POST("/publish/action/", func(c *gin.Context) {
-	// 	token := c.PostForm("token")
-	// 	c.Header("Authorization", token)
-	// 	c.Request.Header.Add("Authorization", token)
-	// 	//这里注意，看你是要加到c.Header还是c.Request.Header里，注释掉不要的一个即可
-	// 	//fmt.Println("c.GetHeader 的结果是 " + c.GetHeader("Authorization"))
-	// 	//fmt.Println("c.Request.Header.Get的结果是" + c.Request.Header.Get("Authorization"))
-	// 	newUrl := "/douyin/publish/action2/" //重定向的url
-	// 	c.Request.URL.Path = newUrl
-	// 	r.HandleContext(c)
-	// })
+	v1.GET("/feed", handlers.GetVideoFeed)
 	//user1.Use(authMiddleware.MiddlewareFunc())
 	v1.Use(authMiddleware.MiddlewareFunc())
 	v1.GET("/feed", handlers.GetVideoFeed) // 有无登录正常写就行,未登陆的话claims为空,你查出来的userID是-1
