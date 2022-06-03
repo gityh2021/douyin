@@ -4,7 +4,8 @@ import (
 	"douyin/v1/kitex_gen/user"
 	"douyin/v1/kitex_gen/video"
 	"douyin/v1/pkg/constants"
-	jwt "github.com/appleboy/gin-jwt/v2"
+	"douyin/v1/pkg/myjwt"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -61,7 +62,7 @@ func PackCommentVos(users []*user.User, comments []*video.Comment) []*CommentVo 
 }
 
 func GetUserIdFromToken(c *gin.Context) int64 {
-	claims := jwt.ExtractClaims(c)
+	claims := myjwt.ExtractClaims(c)
 	if claims[constants.IdentityKey] == nil {
 		return -1
 	}

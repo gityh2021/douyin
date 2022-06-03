@@ -9,12 +9,13 @@ import (
 	"fmt"
 	"path/filepath"
 
-	jwt "github.com/appleboy/gin-jwt/v2"
+	"douyin/v1/pkg/myjwt"
+
 	"github.com/gin-gonic/gin"
 )
 
 func PublishVideo(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
+	claims := myjwt.ExtractClaims(c)
 	userID := int64(claims[constants.IdentityKey].(float64))
 	titleStr := c.PostForm("title")
 	if titleStr == "" {
