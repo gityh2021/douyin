@@ -24,5 +24,5 @@ func GetUserInfo(c *gin.Context) {
 		SendResponse(c, errno.ConvertErr(err), nil)
 		return
 	}
-	SendUserInfoResponse(c, errno.Success, user.Id, user.Name, user.FollowCount, user.FollowerCount, false)
+	SendUserInfoResponse(c, errno.Success, user)
 }
