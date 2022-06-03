@@ -64,7 +64,7 @@ func main() {
 	v1 := r.Group("/douyin")
 	v1.POST("/user/login/", authMiddleware.LoginHandler)
 	v1.POST("/user/register/", handlers.Register, authMiddleware.LoginHandler) // 注册后自动登录
-	v1.GET("/feed", handlers.GetVideoFeed)
+	// v1.GET("/feed", handlers.GetVideoFeed)
 	//user1.Use(authMiddleware.MiddlewareFunc())
 	v1.Use(authMiddleware.MiddlewareFunc())
 	v1.GET("/feed", handlers.GetVideoFeed) // 有无登录正常写就行,未登陆的话claims为空,你查出来的userID是-1
