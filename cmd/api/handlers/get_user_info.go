@@ -8,12 +8,13 @@ import (
 	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/errno"
 
-	jwt "github.com/appleboy/gin-jwt/v2"
+	"douyin/v1/pkg/myjwt"
+
 	"github.com/gin-gonic/gin"
 )
 
 func GetUserInfo(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
+	claims := myjwt.ExtractClaims(c)
 	// fmt.Printf("claims: %v\n", claims)
 	// fmt.Printf("claims[constants.IdentityKey]: %v\n", claims[constants.IdentityKey])
 	userID := int64(claims[constants.IdentityKey].(float64))

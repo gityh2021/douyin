@@ -5,6 +5,7 @@ import (
 	"douyin/v1/cmd/api/rpc"
 	"douyin/v1/cmd/api/vo"
 	"douyin/v1/pkg/errno"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -54,6 +55,10 @@ func GetVideoFeed(c *gin.Context) {
 	userIdFromToken := vo.GetUserIdFromToken(c)
 	lastTimeStr := c.Query("latest_time")
 	lastTime := time.Now().Unix()
+	fmt.Printf("userIdFromToken: %v\n", userIdFromToken)
+	fmt.Printf("lastTimeStr: %v\n", lastTimeStr)
+	fmt.Printf("lastTime: %v\n", lastTime)
+	// c.JSON(200, "ok")
 	if lastTimeStr != "" {
 		t, err := strconv.ParseInt(lastTimeStr, 10, 64)
 		if err != nil {

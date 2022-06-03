@@ -7,14 +7,14 @@ import (
 	"douyin/v1/kitex_gen/user"
 	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/errno"
+	"douyin/v1/pkg/myjwt"
 
-	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 )
 
 // get follow list
 func GetFollowList(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
+	claims := myjwt.ExtractClaims(c)
 	userID := int64(claims[constants.IdentityKey].(float64))
 
 	req := &user.MGetUserRequest{UserId: userID, ActionType: constants.QueryFollowList}
@@ -44,7 +44,7 @@ func GetFollowList(c *gin.Context) {
 
 // get follower list
 func GetFollowerList(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
+	claims := myjwt.ExtractClaims(c)
 	userID := int64(claims[constants.IdentityKey].(float64))
 
 	req := &user.MGetUserRequest{UserId: userID, ActionType: constants.QueryFollowerList}
