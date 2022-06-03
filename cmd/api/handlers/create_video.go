@@ -37,7 +37,7 @@ func PublishVideo(c *gin.Context) {
 	newVideo := video.Video{
 		AuthorId:      userID,
 		PlayUrl:       constants.PlayURL + filename,
-		CoverUrl:      constants.CoverURL,
+		CoverUrl:      constants.CoverURL + "1.png",
 		FavoriteCount: 0,
 		CommentCount:  0,
 		IsFavorite:    false,
