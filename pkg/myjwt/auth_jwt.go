@@ -429,10 +429,24 @@ func (mw *GinJWTMiddleware) MiddlewareFunc() gin.HandlerFunc {
 
 func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 	claims, err := mw.GetClaimsFromJWT(c)
+	fmt.Printf("claims: %v\n", claims)
 	if err != nil {
+		fmt.Printf("err: %#v\n", err)
+		fmt.Printf("err: %v\n", err)
+		fmt.Printf("err.Error(): %v\n", err.Error())
 		// fmt.Printf("c.Request.URL: %v\n", c.Request.URL) // /douyin/user/
-		// 过滤掉不需要验证token的url
-		fmt.Println(",,,,,,,,,有错误!")
+		// 可能是过期了,过期我们就返回过期的错误
+		// if err.Error() == "Token is expired" {
+		// 	mw.unauthorized(c, http.StatusUnauthorized, mw.HTTPStatusMessageFunc(err, c))
+		// 	return
+		// }
+		// 非空的token,可以认为攻击者在尝试攻击,或者是过期了
+		if err.Error() != "form post token is empty" {
+			mw.unauthorized(c, http.StatusUnauthorized, mw.HTTPStatusMessageFunc(err, c))
+			return
+		}
+		// 空的token,过滤掉不需要验证token的url
+		fmt.Println(",,,,,,,,,空的token!")
 		if c.Request.URL.Path != mw.FilteredURL {
 			mw.unauthorized(c, http.StatusUnauthorized, mw.HTTPStatusMessageFunc(err, c))
 			return
@@ -459,12 +473,11 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 
 	if claims["exp"] != nil {
 		if int64(claims["exp"].(float64)) < mw.TimeFunc().Unix() {
-			// 过滤掉不需要验证token的url
 			fmt.Println(",,,,,,,,,claims[exp] < mw.TimeFunc().Unix()!")
-			if c.Request.URL.Path != mw.FilteredURL {
-				mw.unauthorized(c, http.StatusUnauthorized, mw.HTTPStatusMessageFunc(ErrExpiredToken, c))
-				return
-			}
+			// 如果在最上面解析时没过期,处理到这里过期了,这样就能正常返回token过期的错误
+			mw.unauthorized(c, http.StatusUnauthorized, mw.HTTPStatusMessageFunc(ErrExpiredToken, c))
+			return
+
 		}
 	}
 
