@@ -94,15 +94,15 @@ type UserParam struct {
 
 // video ----------------------------------------------------------
 
-type QueryByUserIdResponse struct {
+type QueryByVideoList struct {
 	Code    int32       `json:"status_code"`
 	Message string      `json:"status_msg"`
 	Data    interface{} `json:"video_list"`
 }
 
-func SendQueryByUserIdResponse(c *gin.Context, err error, data interface{}) {
+func SendQueryByVideoList(c *gin.Context, err error, data interface{}) {
 	Err := errno.ConvertErr(err)
-	c.JSON(http.StatusOK, QueryByUserIdResponse{
+	c.JSON(http.StatusOK, QueryByVideoList{
 		Code:    Err.ErrCode,
 		Message: Err.ErrMsg,
 		Data:    data,

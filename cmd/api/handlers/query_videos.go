@@ -18,23 +18,23 @@ func GetMyPublishVideoList(c *gin.Context) {
 	if userIdStr != "" {
 		userIdFromQuery, err := strconv.ParseInt(userIdStr, 10, 64)
 		if err != nil {
-			SendQueryByUserIdResponse(c, errno.ParamErr, nil)
+			SendQueryByVideoList(c, errno.ParamErr, nil)
 			return
 		}
 		if userIdFromQuery != userIdFromToken {
-			SendQueryByUserIdResponse(c, errno.IdNotEqualErr, nil)
+			SendQueryByVideoList(c, errno.IdNotEqualErr, nil)
 			return
 		}
 	}
 	videos, err := rpc.GetPublishVideoList(context.Background(), userIdFromToken)
 	if err != nil {
-		SendQueryByUserIdResponse(c, errno.ConvertErr(err), nil)
+		SendQueryByVideoList(c, errno.ConvertErr(err), nil)
 		return
 	}
 
 	// 将Author信息封装到VideoVo中
 	if len(videos) == 0 {
-		SendQueryByUserIdResponse(c, errno.Success, videos)
+		SendQueryByVideoList(c, errno.Success, videos)
 		return
 	} else {
 		ids := make([]int64, len(videos))
@@ -43,11 +43,11 @@ func GetMyPublishVideoList(c *gin.Context) {
 		}
 		users, err := rpc.GetUsersByIds(c, ids, userIdFromToken)
 		if err != nil {
-			SendQueryByUserIdResponse(c, err, nil)
+			SendQueryByVideoList(c, err, nil)
 			return
 		}
 		videoVos := vo.PackVideoVos(users, videos)
-		SendQueryByUserIdResponse(c, errno.Success, videoVos)
+		SendQueryByVideoList(c, errno.Success, videoVos)
 	}
 }
 
