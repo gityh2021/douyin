@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 
-	"douyin/v1/kitex_gen/user"
 	"douyin/v1/pkg/constants"
 
 	"gorm.io/gorm"
@@ -43,26 +42,26 @@ func QueryFollowerById(ctx context.Context, userId int64) ([]*int64, error) {
 	return followerIds, nil
 }
 
-func DealWithFollowRelation(ctx context.Context, req *user.UpdateUserRequest) error {
-	if req.UserId == constants.NotLogin {
-		return nil
-	}
+// func DealWithFollowRelation(ctx context.Context, req *user.UpdateUserRequest) error {
+// 	if req.UserId == constants.NotLogin {
+// 		return nil
+// 	}
 
-	if req.ActionType == constants.RelationAdd {
-		// 添加关注
-		var cnt int64 = 0
-		err := DB.WithContext(ctx).Model(&Follower{}).Where("user_id = ? and follower_id = ?", req.ToUserId, req.UserId).Count(&cnt).Error
-		if err != nil {
-			return err
-		}
-		if cnt > 0 {
-			return nil
-		}
-		return DB.WithContext(ctx).Create(&Follower{UserID: req.ToUserId, FollowerID: req.UserId}).Error
+// 	if req.ActionType == constants.RelationAdd {
+// 		// 添加关注
+// 		var cnt int64 = 0
+// 		err := DB.WithContext(ctx).Model(&Follower{}).Where("user_id = ? and follower_id = ?", req.ToUserId, req.UserId).Count(&cnt).Error
+// 		if err != nil {
+// 			return err
+// 		}
+// 		if cnt > 0 {
+// 			return nil
+// 		}
+// 		return DB.WithContext(ctx).Create(&Follower{UserID: req.ToUserId, FollowerID: req.UserId}).Error
 
-	} else if req.ActionType == constants.RelationDel {
-		// 取消关注
-		return DB.WithContext(ctx).Where("user_id = ? and follower_id = ?", req.ToUserId, req.UserId).Delete(&Follower{}).Error
-	}
-	return nil
-}
+// 	} else if req.ActionType == constants.RelationDel {
+// 		// 取消关注
+// 		return DB.WithContext(ctx).Where("user_id = ? and follower_id = ?", req.ToUserId, req.UserId).Delete(&Follower{}).Error
+// 	}
+// 	return nil
+// }
