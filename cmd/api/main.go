@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"douyin/v1/cmd/api/handlers"
@@ -58,6 +60,8 @@ func main() {
 		TimeFunc:      time.Now,
 		FilteredURL:   "/douyin/feed", // 设置你需要跳过认证的url,目前比较粗糙,是string而不是string数组,我们项目应该只需要一条URL吧
 	})
+	// test
+	fmt.Println(os.Getwd())
 	// 文件系统静态资源获取
 	r.StaticFS("/cover", http.Dir("./cmd/api/static/images"))
 	r.StaticFS("/videos", http.Dir("./cmd/api/static/videos"))
@@ -66,6 +70,7 @@ func main() {
 	v1.POST("/user/register/", handlers.Register, authMiddleware.LoginHandler) // 注册后自动登录
 	// v1.GET("/feed", handlers.GetVideoFeed)
 	//user1.Use(authMiddleware.MiddlewareFunc())
+	// v1.POST("/publish/action/", handlers.PublishVideo)
 	v1.Use(authMiddleware.MiddlewareFunc())
 	v1.GET("/feed", handlers.GetVideoFeed) // 有无登录正常写就行,未登陆的话claims为空,你查出来的userID是-1
 	v1.GET("/user/", handlers.GetUserInfo)
