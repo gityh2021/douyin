@@ -99,6 +99,7 @@ func MGetUsers(ctx context.Context, req *user.MGetUserRequest) ([]*User, error) 
 	}
 }
 
+//UpdateUser需要使用事务
 func UpdateUser(ctx context.Context, req *user.UpdateUserRequest) error {
 	// step 1: query table follower
 	err := DealWithFollowRelation(ctx, req)
@@ -108,6 +109,7 @@ func UpdateUser(ctx context.Context, req *user.UpdateUserRequest) error {
 	// step 2: update table user
 	var user1 User
 	var user2 User
+	//这里是关注
 	if req.ActionType == constants.RelationAdd {
 		var cnt int64 = 0
 		err := DB.WithContext(ctx).Model(&Follower{}).Where("user_id = ? and follower_id = ?", req.ToUserId, req.UserId).Count(&cnt).Error
@@ -121,32 +123,51 @@ func UpdateUser(ctx context.Context, req *user.UpdateUserRequest) error {
 		if err = DB.WithContext(ctx).Where("id = ?", req.UserId).First(&user1).Error; err != nil {
 			return err
 		}
-		user1.FollowCount += 1
-		if err = DB.WithContext(ctx).Model(&user1).Select("follow_count").Updates(user1).Error; err != nil {
-			return err
-		}
+
 		if err = DB.WithContext(ctx).Where("id = ?", req.ToUserId).First(&user2).Error; err != nil {
 			return err
 		}
+
+		user1.FollowCount += 1
 		user2.FollowerCount += 1
-		if err = DB.WithContext(ctx).Model(&user2).Select("follower_count").Updates(user2).Error; err != nil {
-			return err
-		}
+		DB.Transaction(func(tx *gorm.DB) error {
+			// 在事务中执行一些 db 操作（从这里开始，应该使用 'tx' 而不是 'db'）
+			if err := tx.WithContext(ctx).Model(&user1).Select("follow_count").Updates(user1).Error; err != nil {
+				// 返回任何错误都会回滚事务
+				return err
+			}
+
+			if err := tx.WithContext(ctx).Model(&user2).Select("follower_count").Updates(user2).Error; err != nil {
+				return err
+			}
+			// 返回 nil 提交事务
+			return nil
+		}) //下面是取关
 	} else if req.ActionType == constants.RelationDel {
 		if err = DB.WithContext(ctx).Where("id = ?", req.UserId).First(&user1).Error; err != nil {
 			return err
 		}
-		user1.FollowCount -= 1
-		if err = DB.WithContext(ctx).Model(&user1).Select("follow_count").Updates(user1).Error; err != nil {
-			return err
-		}
+
 		if err = DB.WithContext(ctx).Where("id = ?", req.ToUserId).First(&user2).Error; err != nil {
 			return err
 		}
+
+		user1.FollowCount -= 1
 		user2.FollowerCount -= 1
-		if err = DB.WithContext(ctx).Model(&user2).Select("follower_count").Updates(user2).Error; err != nil {
-			return err
-		}
+		DB.Transaction(func(tx *gorm.DB) error {
+			// 在事务中执行一些 db 操作（从这里开始，应该使用 'tx' 而不是 'db'）
+			if err := tx.WithContext(ctx).Model(&user1).Select("follow_count").Updates(user1).Error; err != nil {
+				// 返回任何错误都会回滚事务
+				return err
+			}
+
+			if err := tx.WithContext(ctx).Model(&user2).Select("follower_count").Updates(user2).Error; err != nil {
+				return err
+			}
+			// 返回 nil 提交事务
+			return nil
+		}) //下面是取关
+
 	}
 	return nil
 }
