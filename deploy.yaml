@@ -1,0 +1,84 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  labels:
+    app: user-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: fduyh2021/user:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8087
+          resources:
+            requests:
+              cpu: 200m
+              memory: 200Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: video-service
+  labels:
+    app: video-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: video-service
+  template:
+    metadata:
+      labels:
+        app: video-service
+    spec:
+      containers:
+        - name: video-service
+          image: fduyh2021/video:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8088
+          resources:
+            requests:
+              cpu: 200m
+              memory: 200Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-service
+  labels:
+    app: api-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api-service
+  template:
+    metadata:
+      labels:
+        app: api-service
+    spec:
+      containers:
+        - name: video-service
+          image: fduyh2021/api:v1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NETWORK_IP
+              value: "172.19.109.141"
+          ports:
+            - containerPort: 8082
+          resources:
+            requests:
+              cpu: 500m
+              memory: 500Mi
