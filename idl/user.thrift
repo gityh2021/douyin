@@ -45,7 +45,8 @@ struct InfoGetUserResponse {
 
 struct MGetUserRequest {
     1:i64 user_id
-    2:i32 action_type
+    2:i64 to_user_id
+    3:i32 action_type
 }
 
 struct MGetUserResponse {

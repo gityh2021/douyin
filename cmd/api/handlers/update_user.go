@@ -17,6 +17,11 @@ func FollowAction(c *gin.Context) {
 	userID := int64(claims[constants.IdentityKey].(float64))
 	toUserID, err := strconv.ParseInt(c.Query("to_user_id"), 10, 64)
 
+	if userID == toUserID {
+		SendResponse(c, errno.FollowSelfErr, nil)
+		return
+	}
+
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
 		return

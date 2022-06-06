@@ -4,6 +4,7 @@ import (
 	"douyin/v1/kitex_gen/user"
 	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/errno"
+	"fmt"
 
 	"gorm.io/gorm"
 
@@ -62,19 +63,20 @@ func QueryUserById(ctx context.Context, userId int64) (User, error) {
 // MGetUsers multiple get list of user info
 func MGetUsers(ctx context.Context, req *user.MGetUserRequest) ([]*User, error) {
 	res := make([]*User, 0)
-	if req.UserId < 1 || req.ActionType < constants.QueryUserInfo || req.ActionType > constants.QueryFollowerList {
+	fmt.Println(req.ToUserId)
+	if req.ToUserId < 1 || req.ActionType < constants.QueryUserInfo || req.ActionType > constants.QueryFollowerList {
 		return nil, errno.ParamErr
 	}
 	if req.ActionType == constants.QueryUserInfo {
 		// query user info
-		if err := DB.WithContext(ctx).Where("id = ?", req.UserId).Find(&res).Error; err != nil {
+		if err := DB.WithContext(ctx).Where("id = ?", req.ToUserId).Find(&res).Error; err != nil {
 			return nil, err
 		}
 		return res, nil
 	} else if req.ActionType == constants.QueryFollowList {
 		// query follow list
 		// step 1: query table follower
-		followIds, err := QueryFollowById(ctx, req.UserId)
+		followIds, err := QueryFollowById(ctx, req.ToUserId)
 		if err != nil {
 			return nil, err
 		}
@@ -87,7 +89,7 @@ func MGetUsers(ctx context.Context, req *user.MGetUserRequest) ([]*User, error) 
 		// if req.ActionType == constants.QueryFollowerList
 		// query follower list
 		// step 1: query table follower
-		followerIds, err := QueryFollowerById(ctx, req.UserId)
+		followerIds, err := QueryFollowerById(ctx, req.ToUserId)
 		if err != nil {
 			return nil, err
 		}
@@ -105,7 +107,6 @@ func QueryFollowRelation(ctx context.Context, users []*User, userId int64) ([]bo
 		for i := 0; i < len(users); i++ {
 			isFollowList[i] = false
 		}
-
 	} else {
 		for i, user := range users {
 			var temp int64 = 0
