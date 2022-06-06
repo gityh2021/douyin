@@ -1,5 +1,7 @@
 FROM golang:1.17.2-alpine
 WORKDIR $GOPATH/douyin
+go env -w GO111MODULE="on"
+go env -w GOPROXY=https://goproxy.cn,direct
 COPY . $GOPATH/douyin
 RUN go build ./cmd/user/
 EXPOSE 8889
