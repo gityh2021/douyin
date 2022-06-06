@@ -6,7 +6,7 @@ metadata:
   labels:
     app: user-service
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: user-service
@@ -23,8 +23,8 @@ spec:
             - containerPort: 8087
           resources:
             requests:
-              cpu: 200m
-              memory: 200Mi
+              cpu: 20m
+              memory: 20Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -33,7 +33,7 @@ metadata:
   labels:
     app: video-service
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: video-service
@@ -50,8 +50,8 @@ spec:
             - containerPort: 8088
           resources:
             requests:
-              cpu: 200m
-              memory: 200Mi
+              cpu: 20m
+              memory: 20Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -60,7 +60,7 @@ metadata:
   labels:
     app: api-service
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: api-service
@@ -80,5 +80,5 @@ spec:
             - containerPort: 8082
           resources:
             requests:
-              cpu: 500m
-              memory: 500Mi
+              cpu: 50m
+              memory: 50Mi
