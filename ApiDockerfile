@@ -1,0 +1,6 @@
+FROM golang:1.17.2-alpine
+WORKDIR $GOPATH/douyin
+COPY . $GOPATH/douyin
+RUN go build ./cmd/api/
+EXPOSE 8080
+ENTRYPOINT ["./api"]
