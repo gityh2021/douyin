@@ -78,10 +78,10 @@ func (s *UserServiceImpl) MGetUser(ctx context.Context, req *user.MGetUserReques
 	// user info, follow and follower
 	resp = new(user.MGetUserResponse)
 
-	if req.UserId < 1 {
-		resp.BaseResp = pack.BuildBaseResp(errno.ParamErr)
-		return resp, nil
-	}
+	//if req.UserId < 1 {
+	//	resp.BaseResp = pack.BuildBaseResp(errno.ParamErr)
+	//	return resp, nil
+	//}
 
 	users, err := service.NewMGetUserService(ctx).MGetUser(req)
 	if err != nil {
@@ -127,7 +127,7 @@ func (s *UserServiceImpl) GetUserInfoList(ctx context.Context, req *user.GetUser
 		resp.BaseResp = pack.BuildBaseResp(err)
 		return resp, nil
 	}
- 
+
 	resp.BaseResp = pack.BuildBaseResp(errno.Success)
 	resp.Users = users
 	return resp, nil

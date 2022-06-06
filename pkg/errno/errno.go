@@ -14,6 +14,7 @@ const (
 	UserAlreadyExistErrCode = 10005
 	IdNotEqualErrCode       = 20001
 	ActionUnSupportErrCode  = 20002
+	FollowSelfErrCode       = 20003
 )
 
 type ErrNo struct {
@@ -43,6 +44,7 @@ var (
 	LoginErr            = NewErrNo(LoginErrCode, "Wrong username or password")
 	UserNotExistErr     = NewErrNo(UserNotExistErrCode, "User does not exists")
 	UserAlreadyExistErr = NewErrNo(UserAlreadyExistErrCode, "User already exists")
+	FollowSelfErr       = NewErrNo(FollowSelfErrCode, "You can't follow yourself")
 )
 
 // ConvertErr convert error to Errno

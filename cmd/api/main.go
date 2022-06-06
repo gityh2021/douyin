@@ -58,7 +58,7 @@ func main() {
 		TokenLookup:   "header: Authorization, query: token, cookie: jwt, postform: token",
 		TokenHeadName: "Bearer",
 		TimeFunc:      time.Now,
-		FilteredURL:   "/douyin/feed", // 设置你需要跳过认证的url,目前比较粗糙,是string而不是string数组,我们项目应该只需要一条URL吧
+		FilteredURL:   "/douyin/feed, /douyin/publish/list, /douyin/favorite/list/, /douyin/comment/list/, /douyin/relation/follow/list/, /douyin/relation/follower/list/", // 设置你需要跳过认证的url
 	})
 	// test
 	fmt.Println(os.Getwd())
