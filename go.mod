@@ -10,9 +10,9 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.2.0
 	github.com/kitex-contrib/registry-etcd v0.0.0-20220110034026-b1c94979cea3
 	github.com/shirou/gopsutil v3.21.11+incompatible
-	github.com/u2takey/ffmpeg-go v0.4.1
 	gorm.io/driver/mysql v1.3.4
 	gorm.io/gorm v1.23.5
+	gorm.io/plugin/dbresolver v1.2.0
 	gorm.io/plugin/opentracing v0.0.0-20211220013347-7d2b2af23560
 )
 
@@ -21,7 +21,6 @@ require github.com/bytedance/gopkg v0.0.0-20220519031347-b9c1c36b51a6 // indirec
 replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
 
 require (
-	github.com/aws/aws-sdk-go v1.38.20 // indirect
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/choleraehyq/pid v0.0.13 // indirect
 	github.com/cloudwego/netpoll v0.2.2 // indirect
@@ -39,7 +38,6 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.4 // indirect
-	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
@@ -53,7 +51,6 @@ require (
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.10 // indirect
 	github.com/tklauser/numcpus v0.4.0 // indirect
-	github.com/u2takey/go-utils v0.3.1 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.1 // indirect

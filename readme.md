@@ -1,3 +1,8 @@
+GOROOT=/usr/local/go #gosetup
+GOPATH=/home/yang/go #gosetup
+/usr/local/go/bin/go build -o /tmp/GoLand/___go_build_handler_go_main_go /home/yang/douyin/cmd/user/handler.go /home/yang/douyin/cmd/user/main.go #gosetup
+/tmp/GoLand/___go_build_handler_go_main_go
+
 # user service
 
 ## version 1 
