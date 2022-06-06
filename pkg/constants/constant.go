@@ -16,8 +16,6 @@ const (
 	VideoServiceName          = "video"
 	UserServiceName           = "user"
 	EtcdAddress               = "139.224.195.12:2379"
-	PlayURL                   = "http://192.168.1.3:8080/videos/"
-	CoverURL                  = "http://192.168.1.3:8080/cover/"
 	CPURateLimit      float64 = 80.0
 	DefaultLimit              = 10
 	QueryUserInfo     int32   = 1

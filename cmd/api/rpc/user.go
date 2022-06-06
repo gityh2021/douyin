@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	etcd "github.com/kitex-contrib/registry-etcd"
 	"time"
 
 	"douyin/v1/kitex_gen/user"
@@ -12,7 +13,6 @@ import (
 
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
-	etcd "github.com/kitex-contrib/registry-etcd"
 )
 
 var userClient userservice.Client
@@ -31,7 +31,8 @@ func initUserRpc() {
 		client.WithRPCTimeout(3*time.Second),              // rpc timeout
 		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
-		client.WithResolver(r),                            // resolver
+		client.WithResolver(r),
+		client.WithHostPorts(constants.NetworkAddress+":8888"), // resolver
 	)
 	if err != nil {
 		panic(err)
