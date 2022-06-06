@@ -1,0 +1,9 @@
+FROM golang:1.17.2-alpine
+ENV VIDEO_PORT=8088
+WORKDIR $GOPATH/douyin
+RUN go env -w GO111MODULE="on"
+RUN go env -w GOPROXY=https://goproxy.cn,direct
+COPY . $GOPATH/douyin
+RUN go build ./cmd/video/
+EXPOSE 8081
+ENTRYPOINT ["./video"]

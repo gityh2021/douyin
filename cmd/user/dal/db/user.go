@@ -4,6 +4,7 @@ import (
 	"douyin/v1/kitex_gen/user"
 	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/errno"
+	"fmt"
 
 	"gorm.io/gorm"
 
@@ -62,19 +63,20 @@ func QueryUserById(ctx context.Context, userId int64) (User, error) {
 // MGetUsers multiple get list of user info
 func MGetUsers(ctx context.Context, req *user.MGetUserRequest) ([]*User, error) {
 	res := make([]*User, 0)
-	if req.UserId < 1 || req.ActionType < constants.QueryUserInfo || req.ActionType > constants.QueryFollowerList {
+	fmt.Println(req.ToUserId)
+	if req.ToUserId < 1 || req.ActionType < constants.QueryUserInfo || req.ActionType > constants.QueryFollowerList {
 		return nil, errno.ParamErr
 	}
 	if req.ActionType == constants.QueryUserInfo {
 		// query user info
-		if err := DB.WithContext(ctx).Where("id = ?", req.UserId).Find(&res).Error; err != nil {
+		if err := DB.WithContext(ctx).Where("id = ?", req.ToUserId).Find(&res).Error; err != nil {
 			return nil, err
 		}
 		return res, nil
 	} else if req.ActionType == constants.QueryFollowList {
 		// query follow list
 		// step 1: query table follower
-		followIds, err := QueryFollowById(ctx, req.UserId)
+		followIds, err := QueryFollowById(ctx, req.ToUserId)
 		if err != nil {
 			return nil, err
 		}
@@ -87,7 +89,7 @@ func MGetUsers(ctx context.Context, req *user.MGetUserRequest) ([]*User, error) 
 		// if req.ActionType == constants.QueryFollowerList
 		// query follower list
 		// step 1: query table follower
-		followerIds, err := QueryFollowerById(ctx, req.UserId)
+		followerIds, err := QueryFollowerById(ctx, req.ToUserId)
 		if err != nil {
 			return nil, err
 		}
@@ -99,56 +101,12 @@ func MGetUsers(ctx context.Context, req *user.MGetUserRequest) ([]*User, error) 
 	}
 }
 
-func UpdateUser(ctx context.Context, req *user.UpdateUserRequest) error {
-	// step 1: query table follower
-	err := DealWithFollowRelation(ctx, req)
-	if err != nil {
-		return err
-	}
-	// step 2: update table user
-	var user1 User
-	var user2 User
-	if req.ActionType == constants.RelationAdd {
-		if err = DB.WithContext(ctx).Where("id = ?", req.UserId).First(&user1).Error; err != nil {
-			return err
-		}
-		user1.FollowCount += 1
-		if err = DB.WithContext(ctx).Model(&user1).Select("follow_count").Updates(user1).Error; err != nil {
-			return err
-		}
-		if err = DB.WithContext(ctx).Where("id = ?", req.ToUserId).First(&user2).Error; err != nil {
-			return err
-		}
-		user2.FollowerCount += 1
-		if err = DB.WithContext(ctx).Model(&user2).Select("follower_count").Updates(user2).Error; err != nil {
-			return err
-		}
-	} else if req.ActionType == constants.RelationDel {
-		if err = DB.WithContext(ctx).Where("id = ?", req.UserId).First(&user1).Error; err != nil {
-			return err
-		}
-		user1.FollowCount -= 1
-		if err = DB.WithContext(ctx).Model(&user1).Select("follow_count").Updates(user1).Error; err != nil {
-			return err
-		}
-		if err = DB.WithContext(ctx).Where("id = ?", req.ToUserId).First(&user2).Error; err != nil {
-			return err
-		}
-		user2.FollowerCount -= 1
-		if err = DB.WithContext(ctx).Model(&user2).Select("follower_count").Updates(user2).Error; err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func QueryFollowRelation(ctx context.Context, users []*User, userId int64) ([]bool, error) {
 	isFollowList := make([]bool, len(users))
 	if userId == constants.NotLogin {
 		for i := 0; i < len(users); i++ {
 			isFollowList[i] = false
 		}
-
 	} else {
 		for i, user := range users {
 			var temp int64 = 0
@@ -173,4 +131,66 @@ func GetUserInfoList(ctx context.Context, userIDs []int64) ([]*User, error) {
 		return nil, err
 	}
 	return res, nil
+}
+
+func UpdateUser(ctx context.Context, req *user.UpdateUserRequest) error {
+	if req.UserId == constants.NotLogin {
+		return nil
+	} //查询用户是否存在
+
+	// 如果要关注 查询是否已经是关注状态
+	//如果要取关 查询是否已经是取关状态
+	var cnt int64 = 0
+	if err := DB.WithContext(ctx).Model(&Follower{}).Where("user_id = ? and follower_id = ?", req.ToUserId, req.UserId).Count(&cnt).Error; err != nil {
+		return err
+	}
+
+	if req.ActionType == constants.RelationAdd {
+		if cnt > 0 {
+			return nil
+		}
+	} else if req.ActionType == constants.RelationDel {
+		if cnt == 0 {
+			return nil
+		}
+	}
+
+	//查询两个用户是否存在
+	var user1 User
+	var user2 User
+
+	if err := DB.WithContext(ctx).Where("id = ?", req.UserId).First(&user1).Error; err != nil {
+		return err
+	}
+
+	if err := DB.WithContext(ctx).Where("id = ?", req.ToUserId).First(&user2).Error; err != nil {
+		return err
+	}
+
+	//使用事务封装
+	return DB.Transaction(func(tx *gorm.DB) error {
+		//先在Follow表中更改关注的关系
+		//再在User表中更改follow_count与follower_count
+		if req.ActionType == constants.RelationAdd {
+			if err := tx.WithContext(ctx).Create(&Follower{UserID: req.ToUserId, FollowerID: req.UserId}).Error; err != nil {
+				return err
+			}
+			user1.FollowCount += 1
+			user2.FollowerCount += 1
+		} else if req.ActionType == constants.RelationDel {
+			if err := tx.WithContext(ctx).Where("user_id = ? and follower_id = ?", req.ToUserId, req.UserId).Delete(&Follower{}).Error; err != nil {
+				return err
+			}
+			user1.FollowCount -= 1
+			user2.FollowerCount -= 1
+		}
+		if err := tx.WithContext(ctx).Model(&user1).Select("follow_count").Updates(user1).Error; err != nil {
+			return err
+		}
+
+		if err := tx.WithContext(ctx).Model(&user2).Select("follower_count").Updates(user2).Error; err != nil {
+			return err
+		}
+		return nil //没有错误则提交事务
+	})
 }

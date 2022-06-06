@@ -3,24 +3,28 @@ package handlers
 import (
 	"context"
 	"douyin/v1/cmd/api/rpc"
+	"douyin/v1/cmd/api/vo"
 	"douyin/v1/kitex_gen/video"
 	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/errno"
 	"fmt"
 	"path/filepath"
 
-	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 )
 
 func PublishVideo(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
-	userID := int64(claims[constants.IdentityKey].(float64))
+	//claims := myjwt.ExtractClaims(c)
+	//userID := int64(claims[constants.IdentityKey].(float64))
+	userID := vo.GetUserIdFromToken(c)
 	titleStr := c.PostForm("title")
+	//如果视频标题为空 err
 	if titleStr == "" {
 		SendCreateVideoResponse(c, errno.ParamErr)
 		return
 	}
+
+	//获取视频流
 	data, err := c.FormFile("data")
 	if err != nil {
 		SendCreateVideoResponse(c, err)
@@ -37,7 +41,7 @@ func PublishVideo(c *gin.Context) {
 	newVideo := video.Video{
 		AuthorId:      userID,
 		PlayUrl:       constants.PlayURL + filename,
-		CoverUrl:      constants.CoverURL,
+		CoverUrl:      constants.CoverURL + "1.png",
 		FavoriteCount: 0,
 		CommentCount:  0,
 		IsFavorite:    false,

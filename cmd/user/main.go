@@ -1,19 +1,17 @@
 package main
 
 import (
-	"net"
-
 	"douyin/v1/cmd/user/dal"
 	user "douyin/v1/kitex_gen/user/userservice"
 	"douyin/v1/pkg/bound"
 	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/middleware"
-
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
+	"net"
 )
 
 func Init() {
@@ -25,7 +23,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:8889")
+	addr, err := net.ResolveTCPAddr("tcp", ":"+constants.USER_PORT)
 	if err != nil {
 		panic(err)
 	}

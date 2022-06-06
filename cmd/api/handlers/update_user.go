@@ -6,16 +6,21 @@ import (
 	"douyin/v1/kitex_gen/user"
 	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/errno"
+	"douyin/v1/pkg/myjwt"
 	"strconv"
 
-	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 )
 
 func FollowAction(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
+	claims := myjwt.ExtractClaims(c)
 	userID := int64(claims[constants.IdentityKey].(float64))
 	toUserID, err := strconv.ParseInt(c.Query("to_user_id"), 10, 64)
+
+	if userID == toUserID {
+		SendResponse(c, errno.FollowSelfErr, nil)
+		return
+	}
 
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)

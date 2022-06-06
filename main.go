@@ -1,7 +1,16 @@
 package main
 
-import "fmt"
+import (
+	user "douyin/v1/kitex_gen/user/userservice"
+	"log"
+)
 
 func main() {
-	fmt.Println("test")
+	svr := user.NewServer(new(UserServiceImpl))
+
+	err := svr.Run()
+
+	if err != nil {
+		log.Println(err.Error())
+	}
 }

@@ -34,11 +34,6 @@ type UserInfoResponse struct {
 	Code    int32       `json:"status_code"`
 	Message string      `json:"status_msg"`
 	User    interface{} `json:"user"`
-	// UserId        int64       `json:"id"`
-	// UserName      string      `json:"name"`
-	// FollowCount   int64       `json:"follow_count"`
-	// FollowerCount int64       `json:"follower_count"`
-	// IsFollow      bool        `json:"is_follow"`
 }
 
 type UserListResponse struct {
@@ -78,11 +73,6 @@ func SendUserInfoResponse(c *gin.Context, err error, user *user.User) {
 		Code:    Err.ErrCode,
 		Message: Err.ErrMsg,
 		User:    users["user"],
-		// UserId:        userId,
-		// UserName:      userName,
-		// FollowCount:   followCount,
-		// FollowerCount: followerCount,
-		// IsFollow:      isFollow,
 	})
 }
 
@@ -104,15 +94,15 @@ type UserParam struct {
 
 // video ----------------------------------------------------------
 
-type QueryByUserIdResponse struct {
+type QueryByVideoList struct {
 	Code    int32       `json:"status_code"`
 	Message string      `json:"status_msg"`
 	Data    interface{} `json:"video_list"`
 }
 
-func SendQueryByUserIdResponse(c *gin.Context, err error, data interface{}) {
+func SendQueryByVideoList(c *gin.Context, err error, data interface{}) {
 	Err := errno.ConvertErr(err)
-	c.JSON(http.StatusOK, QueryByUserIdResponse{
+	c.JSON(http.StatusOK, QueryByVideoList{
 		Code:    Err.ErrCode,
 		Message: Err.ErrMsg,
 		Data:    data,
