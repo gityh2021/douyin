@@ -5,7 +5,6 @@ import (
 	"douyin/v1/kitex_gen/video"
 	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/myjwt"
-
 	"github.com/gin-gonic/gin"
 )
 

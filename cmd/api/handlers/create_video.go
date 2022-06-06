@@ -2,20 +2,21 @@ package handlers
 
 import (
 	"context"
+	"douyin/v1/cmd/api/oss"
 	"douyin/v1/cmd/api/rpc"
 	"douyin/v1/cmd/api/vo"
 	"douyin/v1/kitex_gen/video"
 	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/errno"
-	"fmt"
+	"math/rand"
 	"path/filepath"
+	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func PublishVideo(c *gin.Context) {
-	//claims := myjwt.ExtractClaims(c)
-	//userID := int64(claims[constants.IdentityKey].(float64))
 	userID := vo.GetUserIdFromToken(c)
 	titleStr := c.PostForm("title")
 	//如果视频标题为空 err
@@ -30,18 +31,22 @@ func PublishVideo(c *gin.Context) {
 		SendCreateVideoResponse(c, err)
 		return
 	}
-	filename := filepath.Base(data.Filename)
-	finalName := fmt.Sprintf(filename)
-	// 存储视频文件
-	saveFile := filepath.Join("./cmd/api/static/videos/", finalName)
-	if err := c.SaveUploadedFile(data, saveFile); err != nil {
+	if err != nil {
 		SendCreateVideoResponse(c, err)
 		return
 	}
+	videoFilename := "video/" + strconv.FormatInt(userID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + filepath.Base(data.Filename)
+	if err := oss.PutFeed(data, videoFilename); err != nil {
+		SendCreateVideoResponse(c, err)
+		return
+	}
+	// 随机选择一张图片作为封面
+	rand.Seed(time.Now().Unix())
+	coverFileName := "cover/" + strconv.Itoa(rand.Intn(20)) + ".jpeg"
 	newVideo := video.Video{
 		AuthorId:      userID,
-		PlayUrl:       constants.PlayURL + filename,
-		CoverUrl:      constants.CoverURL + "1.png",
+		PlayUrl:       constants.OSSFetchURL + videoFilename,
+		CoverUrl:      constants.OSSFetchURL + coverFileName,
 		FavoriteCount: 0,
 		CommentCount:  0,
 		IsFavorite:    false,

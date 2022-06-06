@@ -2,9 +2,8 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"douyin/v1/cmd/api/oss"
 	"net/http"
-	"os"
 	"time"
 
 	"douyin/v1/cmd/api/handlers"
@@ -20,11 +19,11 @@ import (
 
 func Init() {
 	rpc.InitRPC()
+	oss.Init()
 }
 
 func main() {
 	Init()
-	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	authMiddleware, _ := myjwt.New(&myjwt.GinJWTMiddleware{
 		Key:        []byte(constants.SecretKey),
@@ -61,11 +60,6 @@ func main() {
 		TimeFunc:      time.Now,
 		FilteredURL:   "/douyin/feed, /douyin/publish/list, /douyin/favorite/list/, /douyin/comment/list/, /douyin/relation/follow/list/, /douyin/relation/follower/list/", // 设置你需要跳过认证的url
 	})
-	// test
-	fmt.Println(os.Getwd())
-	// 文件系统静态资源获取
-	r.StaticFS("/cover", http.Dir("./cmd/api/static/images"))
-	r.StaticFS("/videos", http.Dir("./cmd/api/static/videos"))
 	v1 := r.Group("/douyin")
 	v1.POST("/user/login/", authMiddleware.LoginHandler)
 	v1.POST("/user/register/", handlers.Register, authMiddleware.LoginHandler) // 注册后自动登录

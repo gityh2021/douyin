@@ -24,6 +24,12 @@ const (
 	RelationAdd       int32   = 1
 	RelationDel       int32   = 2
 	NotLogin          int64   = -1
+	// oss相关配置
+	ENDPOINT        = "https://oss-cn-hangzhou.aliyuncs.com"
+	ACCESSId        = "LTAI5tNMxDoBxxXtffJUGDXS"
+	AccessKeySecret = "WFJELWbPHQ7WYapYvlGv2e4I8gltdx"
+	BucketName      = "dousheng11"
+	OSSFetchURL     = "https://" + BucketName + ".oss-cn-hangzhou.aliyuncs.com/"
 )
 
 // const (
