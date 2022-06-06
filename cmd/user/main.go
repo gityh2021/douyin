@@ -23,7 +23,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	addr, err := net.ResolveTCPAddr("tcp", ":8889")
+	addr, err := net.ResolveTCPAddr("tcp", ":"+constants.USER_PORT)
 	if err != nil {
 		panic(err)
 	}

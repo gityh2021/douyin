@@ -85,7 +85,7 @@ func main() {
 	v1.GET("/relation/follow/list/", handlers.GetFollowList)
 	v1.GET("/relation/follower/list/", handlers.GetFollowerList)
 	v1.POST("/relation/action/", handlers.FollowAction) // 支持从postform里面获取token,不用加Bearer
-	if err := http.ListenAndServe(":8080", r); err != nil {
+	if err := http.ListenAndServe(":"+constants.API_PORT, r); err != nil {
 		klog.Fatal(err)
 	}
 	r.Run()

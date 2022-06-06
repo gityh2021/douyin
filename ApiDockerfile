@@ -1,6 +1,9 @@
 FROM golang:1.17.2-alpine
 ENV SERVER_IP=192.168.1.3 \
-    NETWORK_IP=172.18.0.1
+    NETWORK_IP=172.18.0.1 \
+    USER_PORT=8087 \
+    VIDEO_PORT=8088 \
+    API_PORT=8089
 RUN go env -w GO111MODULE="on"
 RUN go env -w GOPROXY=https://goproxy.cn,direct
 WORKDIR $GOPATH/douyin

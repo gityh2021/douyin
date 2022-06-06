@@ -1,4 +1,5 @@
 FROM golang:1.17.2-alpine
+ENV USER_PORT=8087
 WORKDIR $GOPATH/douyin
 RUN go env -w GO111MODULE="on"
 RUN go env -w GOPROXY=https://goproxy.cn,direct

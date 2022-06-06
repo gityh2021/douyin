@@ -27,7 +27,7 @@ func initVideoRpc() {
 		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
 		client.WithResolver(r),
-		client.WithHostPorts(constants.NetworkAddress+":8081"), // resolver// resolver
+		client.WithHostPorts(constants.NetworkAddress+":"+constants.VIDEO_PORT), // resolver// resolver
 	)
 	if err != nil {
 		panic(err)

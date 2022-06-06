@@ -32,7 +32,7 @@ func initUserRpc() {
 		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
 		client.WithResolver(r),
-		client.WithHostPorts(constants.NetworkAddress+":8889"), // resolver
+		client.WithHostPorts(constants.NetworkAddress+":"+constants.USER_PORT), // resolver
 	)
 	if err != nil {
 		panic(err)

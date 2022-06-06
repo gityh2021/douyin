@@ -3,6 +3,7 @@ package main
 import (
 	"douyin/v1/cmd/video/dal/db"
 	"douyin/v1/kitex_gen/video/videoservice"
+	"douyin/v1/pkg/constants"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -16,7 +17,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	addr, err := net.ResolveTCPAddr("tcp", ":8081")
+	addr, err := net.ResolveTCPAddr("tcp", ":"+constants.VIDEO_PORT)
 	if err != nil {
 		panic(err)
 	}
