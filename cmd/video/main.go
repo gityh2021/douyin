@@ -8,6 +8,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	"github.com/kitex-contrib/registry-etcd"
+	"net"
 )
 
 func main() {
@@ -15,18 +16,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	////addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:8081")
-	//fmt.Println(os.Getenv("host.docker.internal"))
-	//fmt.Println(constants.HOST + ":8081")
+	addr, err := net.ResolveTCPAddr("tcp", ":8081")
 	if err != nil {
 		panic(err)
 	}
 	db.Init()
 	svr := videoservice.NewServer(new(VideoServiceImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: "video"}), // server name
-		//server.WithServiceAddr(addr),                                       // address
+		server.WithServiceAddr(addr),                                       // address
 		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // limit
-		server.WithMuxTransport(), // Multiplex
+		server.WithMuxTransport(),                                          // Multiplex
 		//server.WithBoundHandler(bound.NewCpuLimitHandler()),                // BoundHandler
 		server.WithRegistry(r), // registry
 	)
