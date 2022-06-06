@@ -12,21 +12,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetMyPublishVideoList(c *gin.Context) {
+func GetPublishVideoList(c *gin.Context) {
 	userIdFromToken := vo.GetUserIdFromToken(c)
 	userIdStr := c.Query("user_id")
-	if userIdStr != "" {
-		userIdFromQuery, err := strconv.ParseInt(userIdStr, 10, 64)
-		if err != nil {
-			SendQueryByVideoList(c, errno.ParamErr, nil)
-			return
-		}
-		if userIdFromQuery != userIdFromToken {
-			SendQueryByVideoList(c, errno.IdNotEqualErr, nil)
-			return
-		}
+	if userIdStr == "" {
+		SendQueryByVideoList(c, errno.ParamErr, nil)
+		return
 	}
-	videos, err := rpc.GetPublishVideoList(context.Background(), userIdFromToken)
+	userIdFromQuery, err := strconv.ParseInt(userIdStr, 10, 64)
+	//if userIdStr != "" {
+	//	userIdFromQuery, err := strconv.ParseInt(userIdStr, 10, 64)
+	//	if err != nil {
+	//		SendQueryByVideoList(c, errno.ParamErr, nil)
+	//		return
+	//	}
+	//	if userIdFromQuery != userIdFromToken {
+	//		SendQueryByVideoList(c, errno.IdNotEqualErr, nil)
+	//		return
+	//	}
+	//}
+	videos, err := rpc.GetPublishVideoList(context.Background(), userIdFromQuery)
 	if err != nil {
 		SendQueryByVideoList(c, errno.ConvertErr(err), nil)
 		return

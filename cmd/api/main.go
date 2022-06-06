@@ -74,10 +74,10 @@ func main() {
 	v1.Use(authMiddleware.MiddlewareFunc())
 	v1.GET("/feed", handlers.GetVideoFeed) // 有无登录正常写就行,未登陆的话claims为空,你查出来的userID是-1
 	v1.GET("/user/", handlers.GetUserInfo)
-	v1.GET("/publish/list", handlers.GetMyPublishVideoList)
+	v1.GET("/publish/list", handlers.GetPublishVideoList)
 	v1.POST("/publish/action/", handlers.PublishVideo)
 	v1.POST("/favorite/action/", handlers.FavoriteByUser)
-	v1.GET("/favorite/list/", handlers.GetFavoriteLIst)
+	v1.GET("/favorite/list/", handlers.GetFavoriteList)
 	v1.POST("/comment/action/", handlers.PostComment)
 	v1.GET("/comment/list/", handlers.QueryComments)
 	// user2 := v1.Group("/relation")

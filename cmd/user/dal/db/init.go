@@ -14,8 +14,9 @@ func Init() {
 	var err error
 	DB, err = gorm.Open(mysql.Open(constants.MySQLDefaultDSN),
 		&gorm.Config{
-			PrepareStmt:            true,
-			SkipDefaultTransaction: true,
+			PrepareStmt: true,
+			//SkipDefaultTransaction: true,
+			//这里要注释掉 不然不会开启事务
 		},
 	)
 	if err != nil {
