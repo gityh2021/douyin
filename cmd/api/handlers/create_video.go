@@ -18,10 +18,13 @@ func PublishVideo(c *gin.Context) {
 	//userID := int64(claims[constants.IdentityKey].(float64))
 	userID := vo.GetUserIdFromToken(c)
 	titleStr := c.PostForm("title")
+	//如果视频标题为空 err
 	if titleStr == "" {
 		SendCreateVideoResponse(c, errno.ParamErr)
 		return
 	}
+
+	//获取视频流
 	data, err := c.FormFile("data")
 	if err != nil {
 		SendCreateVideoResponse(c, err)
