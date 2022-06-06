@@ -24,6 +24,7 @@ func Init() {
 
 func main() {
 	Init()
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	authMiddleware, _ := myjwt.New(&myjwt.GinJWTMiddleware{
 		Key:        []byte(constants.SecretKey),

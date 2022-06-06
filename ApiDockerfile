@@ -9,5 +9,5 @@ RUN go env -w GOPROXY=https://goproxy.cn,direct
 WORKDIR $GOPATH/douyin
 COPY . $GOPATH/douyin
 RUN go build ./cmd/api/
-EXPOSE 8080
+EXPOSE 8089
 ENTRYPOINT ["./api"]
