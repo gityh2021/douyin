@@ -4,7 +4,9 @@ const (
 	// 数据库相关常量
 	UserTableName     = "user"
 	FollowerTableName = "follower"
-	MySQLDefaultDSN   = "root:Yang75769933@tcp(139.224.195.12:3305)/douyin?parseTime=True&loc=Local"
+	//MySQLDefaultDSN   = "root:Yang75769933@tcp(139.224.195.12:3305)/douyin?parseTime=True&loc=Local"
+	MySQLDefaultDSN = "root:root@tcp(139.224.195.12:33065)/douyin?parseTime=True&loc=Local"
+	MySQLReplicaDSN = "root:root@tcp(139.224.195.12:33066)/douyin?parseTime=True&loc=Local"
 	// JWT相关常量
 	SecretKey   = "secret key"
 	IdentityKey = "id"

@@ -42,12 +42,6 @@ services:
       - my-mysql-slave:/var/lib/mysql
     networks:
       - net-mysql
-  Etcd:
-    image: 'bitnami/etcd:latest'
-    environment:
-      - ALLOW_NONE_AUTHENTICATION=yes
-    ports:
-      - "2379:2379"
 # Names our volume
 volumes:
   my-mysql-master:
