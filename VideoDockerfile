@@ -1,0 +1,6 @@
+FROM golang:1.17.2-alpine
+WORKDIR $GOPATH/douyin
+COPY . $GOPATH/douyin
+RUN go build ./cmd/video/
+EXPOSE 8081
+ENTRYPOINT ["./video"]

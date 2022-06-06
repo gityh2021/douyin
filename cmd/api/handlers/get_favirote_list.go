@@ -14,10 +14,10 @@ type FavoriteListParam struct {
 	UserId int64  `json:"user_id"`
 }
 
-func GetFavoriteLIst(c *gin.Context) {
-	token := c.Query("token")
+func GetFavoriteList(c *gin.Context) {
+	//token := c.Query("token")
 	userIdStr := c.Query("user_id")
-	if token == "" || userIdStr == "" {
+	if userIdStr == "" {
 		SendQueryByVideoList(c, errno.ParamErr, nil)
 		return
 	}
@@ -27,15 +27,15 @@ func GetFavoriteLIst(c *gin.Context) {
 		return
 	}
 	tokenId := vo.GetUserIdFromToken(c)
-	if tokenId == -1 {
-		SendQueryByVideoList(c, errno.LoginErr, nil)
-		return
-	}
-	if tokenId != userId {
-		SendQueryByVideoList(c, errno.IdNotEqualErr, nil)
-		return
-	}
-	videos, err := rpc.GetFavoriteList(context.Background(), tokenId)
+	//if tokenId == -1 {
+	//	SendQueryByVideoList(c, errno.LoginErr, nil)
+	//	return
+	//}
+	//if tokenId != userId {
+	//	SendQueryByVideoList(c, errno.IdNotEqualErr, nil)
+	//	return
+	//}
+	videos, err := rpc.GetFavoriteList(context.Background(), userId)
 	if err != nil {
 		SendQueryByVideoList(c, errno.ConvertErr(err), nil)
 		return
