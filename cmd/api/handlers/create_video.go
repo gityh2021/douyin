@@ -8,7 +8,6 @@ import (
 	"douyin/v1/kitex_gen/video"
 	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/errno"
-	"math/rand"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -31,27 +30,28 @@ func PublishVideo(c *gin.Context) {
 		SendCreateVideoResponse(c, err)
 		return
 	}
-	if err != nil {
-		SendCreateVideoResponse(c, err)
-		return
-	}
 	videoFilename := "video/" + strconv.FormatInt(userID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + filepath.Base(data.Filename)
-	if err := oss.PutFeed(data, videoFilename); err != nil {
+	coverFileName := "cover/" + strconv.FormatInt(userID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + ".jpeg"
+	saveFile := filepath.Join("./cmd/api/static/", videoFilename)
+	if err := c.SaveUploadedFile(data, saveFile); err != nil {
 		SendCreateVideoResponse(c, err)
 		return
 	}
-	var coverFileName string
-	if err := oss.ExampleReadFrameAsJpeg(constants.OSSFetchURL+videoFilename, 5); err != nil {
-		// 随机选择一张图片作为封面
-		rand.Seed(time.Now().Unix())
-		coverFileName = "cover/" + strconv.Itoa(rand.Intn(20)) + ".jpeg"
-	} else {
-		coverFileName = "cover/" + strconv.FormatInt(userID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + "out.jpeg"
+	v := oss.VideoOss{
+		SourceFile: saveFile,
+		TargetFile: videoFilename,
 	}
-	if err := oss.PutImage("./out.jpeg", coverFileName); err != nil {
-		SendCreateVideoResponse(c, err)
-		return
+	oss.VideoList.Lock()
+	oss.VideoList.M = append(oss.VideoList.M, v)
+	oss.VideoList.Unlock()
+	i := oss.ImgOss{
+		VideoFile:  saveFile,
+		SourceFile: filepath.Join("./cmd/api/static/", coverFileName),
+		TargetFile: coverFileName,
 	}
+	oss.ImgList.Lock()
+	oss.ImgList.M = append(oss.ImgList.M, i)
+	oss.ImgList.Unlock()
 	newVideo := video.Video{
 		AuthorId:      userID,
 		PlayUrl:       constants.OSSFetchURL + videoFilename,
@@ -63,6 +63,7 @@ func PublishVideo(c *gin.Context) {
 	}
 	if err := rpc.CreateVideo(context.Background(), &newVideo); err != nil {
 		SendCreateVideoResponse(c, err)
+		return
 	}
 	SendCreateVideoResponse(c, errno.Success)
 }
