@@ -41,7 +41,7 @@ func PutFeed(fd *multipart.FileHeader, objectName string) error {
 }
 
 func PutImage(sourceFile string, targetFile string) error {
-	return ossBucket.PutObjectFromFile(sourceFile, targetFile)
+	return ossBucket.PutObjectFromFile(targetFile, sourceFile)
 }
 
 func ExampleReadFrameAsJpeg(inFileName string, frameNum int) error {
@@ -52,7 +52,7 @@ func ExampleReadFrameAsJpeg(inFileName string, frameNum int) error {
 		WithOutput(buf, os.Stdout).
 		Run()
 	if err != nil {
-		panic(err)
+		return err
 	}
 	img, err := imaging.Decode(buf)
 	if err != nil {

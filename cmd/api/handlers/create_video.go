@@ -45,8 +45,9 @@ func PublishVideo(c *gin.Context) {
 		// 随机选择一张图片作为封面
 		rand.Seed(time.Now().Unix())
 		coverFileName = "cover/" + strconv.Itoa(rand.Intn(20)) + ".jpeg"
+	} else {
+		coverFileName = "cover/" + strconv.FormatInt(userID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + "out.jpeg"
 	}
-	coverFileName = "cover/" + strconv.FormatInt(userID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + "out.jpeg"
 	if err := oss.PutImage("./out.jpeg", coverFileName); err != nil {
 		SendCreateVideoResponse(c, err)
 		return
