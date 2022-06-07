@@ -5,6 +5,8 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+
+	"gorm.io/plugin/dbresolver"
 )
 
 var DB *gorm.DB
@@ -14,10 +16,20 @@ func Init() {
 	var err error
 	DB, err = gorm.Open(mysql.Open(constants.MySQLDefaultDSN),
 		&gorm.Config{
-			PrepareStmt:            true,
-			SkipDefaultTransaction: true,
+			PrepareStmt: true,
+			//SkipDefaultTransaction: true,
+			//这里要注释掉 不然不会开启事务
 		},
 	)
+	if err != nil {
+		panic(err)
+	}
+	err = DB.Use(dbresolver.Register(dbresolver.Config{
+		Sources:  []gorm.Dialector{mysql.Open(constants.MySQLDefaultDSN)},
+		Replicas: []gorm.Dialector{mysql.Open(constants.MySQLReplicaDSN)},
+		// sources/replicas 负载均衡策略
+		Policy: dbresolver.RandomPolicy{},
+	}))
 	if err != nil {
 		panic(err)
 	}

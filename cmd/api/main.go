@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"douyin/v1/cmd/api/oss"
 	"net/http"
 	"time"
 
@@ -10,37 +11,39 @@ import (
 	"douyin/v1/kitex_gen/user"
 	"douyin/v1/pkg/constants"
 
-	jwt "github.com/appleboy/gin-jwt/v2"
+	"douyin/v1/pkg/myjwt"
+
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/gin-gonic/gin"
 )
 
 func Init() {
 	rpc.InitRPC()
+	oss.Init()
 }
 
 func main() {
 	Init()
 	r := gin.Default()
-	authMiddleware, _ := jwt.New(&jwt.GinJWTMiddleware{
+	authMiddleware, _ := myjwt.New(&myjwt.GinJWTMiddleware{
 		Key:        []byte(constants.SecretKey),
 		Timeout:    time.Hour,
 		MaxRefresh: time.Hour,
-		PayloadFunc: func(data interface{}) jwt.MapClaims {
+		PayloadFunc: func(data interface{}) myjwt.MapClaims {
 			// fmt.Printf("data: %v\n", data)
 			if v, ok := data.(int64); ok {
-				return jwt.MapClaims{
+				return myjwt.MapClaims{
 					constants.IdentityKey: v,
 				}
 			}
-			return jwt.MapClaims{}
+			return myjwt.MapClaims{}
 		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {
 			var loginVar1 handlers.UserParam
 			loginVar1.UserName = c.Query("username")
 			loginVar1.PassWord = c.Query("password")
 			if len(loginVar1.UserName) == 0 || len(loginVar1.PassWord) == 0 {
-				return "", jwt.ErrMissingLoginValues
+				return "", myjwt.ErrMissingLoginValues
 			}
 
 			return rpc.CheckUser(context.Background(), &user.CheckUserRequest{Username: loginVar1.UserName, Password: loginVar1.PassWord})
@@ -52,44 +55,32 @@ func main() {
 			user_id, res := rpc.QueryUser(context.Background(), &user.CheckUserRequest{Username: loginVar2.UserName, Password: loginVar2.PassWord})
 			handlers.SendLoginResponse(c, res, user_id, loginVar2.UserName, token, expire)
 		},
-		TokenLookup:   "header: Authorization, query: token, cookie: jwt",
+		TokenLookup:   "header: Authorization, query: token, cookie: jwt, postform: token",
 		TokenHeadName: "Bearer",
 		TimeFunc:      time.Now,
+		FilteredURL:   "/douyin/feed, /douyin/publish/list, /douyin/favorite/list/, /douyin/comment/list/, /douyin/relation/follow/list/, /douyin/relation/follower/list/", // 设置你需要跳过认证的url
 	})
-	// 文件系统静态资源获取
-	r.StaticFS("/cover", http.Dir("./cmd/api/static/images"))
-	r.StaticFS("/videos", http.Dir("./cmd/api/static/videos"))
 	v1 := r.Group("/douyin")
-	// user1 := v1.Group("/user")
 	v1.POST("/user/login/", authMiddleware.LoginHandler)
 	v1.POST("/user/register/", handlers.Register, authMiddleware.LoginHandler) // 注册后自动登录
-	v1.GET("/feed", handlers.GetVideoFeed)
-	v1.POST("/publish/action/", func(c *gin.Context) {
-		token := c.PostForm("token")
-		c.Header("Authorization", token)
-		c.Request.Header.Add("Authorization", token)
-		//这里注意，看你是要加到c.Header还是c.Request.Header里，注释掉不要的一个即可
-		//fmt.Println("c.GetHeader 的结果是 " + c.GetHeader("Authorization"))
-		//fmt.Println("c.Request.Header.Get的结果是" + c.Request.Header.Get("Authorization"))
-		newUrl := "/douyin/publish/action2/" //重定向的url
-		c.Request.URL.Path = newUrl
-		r.HandleContext(c)
-	})
+	// v1.GET("/feed", handlers.GetVideoFeed)
 	//user1.Use(authMiddleware.MiddlewareFunc())
+	// v1.POST("/publish/action/", handlers.PublishVideo)
 	v1.Use(authMiddleware.MiddlewareFunc())
+	v1.GET("/feed", handlers.GetVideoFeed) // 有无登录正常写就行,未登陆的话claims为空,你查出来的userID是-1
 	v1.GET("/user/", handlers.GetUserInfo)
-	v1.GET("/publish/list", handlers.GetMyPublishVideoList)
-	v1.POST("/publish/action2/", handlers.PublishVideo)
+	v1.GET("/publish/list", handlers.GetPublishVideoList)
+	v1.POST("/publish/action/", handlers.PublishVideo)
 	v1.POST("/favorite/action/", handlers.FavoriteByUser)
-	v1.GET("/favorite/list/", handlers.GetFavoriteLIst)
+	v1.GET("/favorite/list/", handlers.GetFavoriteList)
 	v1.POST("/comment/action/", handlers.PostComment)
 	v1.GET("/comment/list/", handlers.QueryComments)
 	// user2 := v1.Group("/relation")
 	// v1.Use(authMiddleware.MiddlewareFunc())
 	v1.GET("/relation/follow/list/", handlers.GetFollowList)
 	v1.GET("/relation/follower/list/", handlers.GetFollowerList)
-	v1.POST("/relation/action/", handlers.FollowAction)
-	if err := http.ListenAndServe(":8080", r); err != nil {
+	v1.POST("/relation/action/", handlers.FollowAction) // 支持从postform里面获取token,不用加Bearer
+	if err := http.ListenAndServe(":"+constants.API_PORT, r); err != nil {
 		klog.Fatal(err)
 	}
 	r.Run()

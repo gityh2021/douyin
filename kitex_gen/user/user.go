@@ -1972,7 +1972,8 @@ func (p *InfoGetUserResponse) Field2DeepEqual(src *User) bool {
 
 type MGetUserRequest struct {
 	UserId     int64 `thrift:"user_id,1" json:"user_id"`
-	ActionType int32 `thrift:"action_type,2" json:"action_type"`
+	ToUserId   int64 `thrift:"to_user_id,2" json:"to_user_id"`
+	ActionType int32 `thrift:"action_type,3" json:"action_type"`
 }
 
 func NewMGetUserRequest() *MGetUserRequest {
@@ -1983,11 +1984,18 @@ func (p *MGetUserRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
+func (p *MGetUserRequest) GetToUserId() (v int64) {
+	return p.ToUserId
+}
+
 func (p *MGetUserRequest) GetActionType() (v int32) {
 	return p.ActionType
 }
 func (p *MGetUserRequest) SetUserId(val int64) {
 	p.UserId = val
+}
+func (p *MGetUserRequest) SetToUserId(val int64) {
+	p.ToUserId = val
 }
 func (p *MGetUserRequest) SetActionType(val int32) {
 	p.ActionType = val
@@ -1995,7 +2003,8 @@ func (p *MGetUserRequest) SetActionType(val int32) {
 
 var fieldIDToName_MGetUserRequest = map[int16]string{
 	1: "user_id",
-	2: "action_type",
+	2: "to_user_id",
+	3: "action_type",
 }
 
 func (p *MGetUserRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -2028,8 +2037,18 @@ func (p *MGetUserRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.I32 {
+				if err = p.ReadField3(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -2077,6 +2096,15 @@ func (p *MGetUserRequest) ReadField1(iprot thrift.TProtocol) error {
 }
 
 func (p *MGetUserRequest) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.ToUserId = v
+	}
+	return nil
+}
+
+func (p *MGetUserRequest) ReadField3(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
@@ -2097,6 +2125,10 @@ func (p *MGetUserRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField2(oprot); err != nil {
 			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
 			goto WriteFieldError
 		}
 
@@ -2136,10 +2168,10 @@ WriteFieldEndError:
 }
 
 func (p *MGetUserRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("action_type", thrift.I32, 2); err != nil {
+	if err = oprot.WriteFieldBegin("to_user_id", thrift.I64, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.ActionType); err != nil {
+	if err := oprot.WriteI64(p.ToUserId); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -2150,6 +2182,23 @@ WriteFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
 WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *MGetUserRequest) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("action_type", thrift.I32, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI32(p.ActionType); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
 }
 
 func (p *MGetUserRequest) String() string {
@@ -2168,7 +2217,10 @@ func (p *MGetUserRequest) DeepEqual(ano *MGetUserRequest) bool {
 	if !p.Field1DeepEqual(ano.UserId) {
 		return false
 	}
-	if !p.Field2DeepEqual(ano.ActionType) {
+	if !p.Field2DeepEqual(ano.ToUserId) {
+		return false
+	}
+	if !p.Field3DeepEqual(ano.ActionType) {
 		return false
 	}
 	return true
@@ -2181,7 +2233,14 @@ func (p *MGetUserRequest) Field1DeepEqual(src int64) bool {
 	}
 	return true
 }
-func (p *MGetUserRequest) Field2DeepEqual(src int32) bool {
+func (p *MGetUserRequest) Field2DeepEqual(src int64) bool {
+
+	if p.ToUserId != src {
+		return false
+	}
+	return true
+}
+func (p *MGetUserRequest) Field3DeepEqual(src int32) bool {
 
 	if p.ActionType != src {
 		return false

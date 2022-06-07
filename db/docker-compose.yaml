@@ -1,0 +1,52 @@
+version: '3'
+services:
+# 主库  用来增删改
+  mysql-master:
+    build:
+      context: ./
+      dockerfile: master/Dockerfile
+    environment:
+       MYSQL_ROOT_PASSWORD: "root"
+       MYSQL_PASSWORD: '000000'
+       MYSQL_DATABASE: douyin 
+       MYSQL_USER: 'user'
+    links:
+      - mysql-slave
+      # 端口映射
+    ports:
+      - "33065:3306"
+       # Where our data will be persisted
+    volumes:
+      - my-mysql-master:/var/lib/mysql
+    restart: always
+    hostname: mysql-master
+    networks:
+      - net-mysql    
+    # 副库  用来查询
+  mysql-slave:
+    build:
+      context: ./
+      dockerfile: slave/Dockerfile
+    environment:
+        MYSQL_ROOT_PASSWORD: "root"
+        MYSQL_PASSWORD: '000000'
+        MYSQL_DATABASE: douyin
+        MYSQL_USER: 'user'
+      # 端口映射
+    ports:
+      - "33066:3306"
+    restart: always
+    hostname: mysql-slave
+       # Where our data will be persisted
+    volumes:
+      - my-mysql-slave:/var/lib/mysql
+    networks:
+      - net-mysql
+# Names our volume
+volumes:
+  my-mysql-master:
+  my-mysql-slave: 
+# 设置网络为桥接模式
+networks: 
+  net-mysql:
+    driver: bridge

@@ -78,16 +78,16 @@ func PostComment(c *gin.Context) {
 
 func QueryComments(c *gin.Context) {
 	tokenId := vo.GetUserIdFromToken(c)
-	tokenStr := c.Query("token")
+	//tokenStr := c.Query("token")
 	videoIdStr := c.Query("video_id")
-	if tokenStr == "" || videoIdStr == "" {
+	if videoIdStr == "" {
 		SendQueryCommentResponse(c, nil, errno.ParamErr)
 		return
 	}
-	if tokenId == -1 {
-		SendQueryCommentResponse(c, nil, errno.LoginErr)
-		return
-	}
+	//if tokenId == -1 {
+	//	SendQueryCommentResponse(c, nil, errno.LoginErr)
+	//	return
+	//}
 	videoId, err := strconv.ParseInt(videoIdStr, 10, 64)
 	if err != nil {
 		SendQueryCommentResponse(c, nil, err)

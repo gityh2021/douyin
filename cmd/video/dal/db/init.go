@@ -2,6 +2,7 @@ package db
 
 import (
 	"douyin/v1/pkg/constants"
+	"gorm.io/plugin/dbresolver"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -15,14 +16,21 @@ func Init() {
 	var err error
 	DB, err = gorm.Open(mysql.Open(constants.MySQLDefaultDSN),
 		&gorm.Config{
-			PrepareStmt:            true,
-			SkipDefaultTransaction: true,
+			PrepareStmt: true,
+			// SkipDefaultTransaction: true, 这里要开启事务
 		},
 	)
-	println("数据库连接成功!")
 	if err != nil {
 		panic(err)
 	}
+
+	println("数据库连接成功!")
+	err = DB.Use(dbresolver.Register(dbresolver.Config{
+		Sources:  []gorm.Dialector{mysql.Open(constants.MySQLDefaultDSN)},
+		Replicas: []gorm.Dialector{mysql.Open(constants.MySQLReplicaDSN)},
+		// sources/replicas 负载均衡策略
+		Policy: dbresolver.RandomPolicy{},
+	}))
 
 	if err = DB.Use(gormopentracing.New()); err != nil {
 		panic(err)

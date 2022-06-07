@@ -2,22 +2,24 @@ package handlers
 
 import (
 	"context"
+	"douyin/v1/cmd/api/vo"
+	"fmt"
+	"strconv"
 
 	"douyin/v1/cmd/api/rpc"
 	"douyin/v1/kitex_gen/user"
 	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/errno"
-
-	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 )
 
 // get follow list
 func GetFollowList(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
-	userID := int64(claims[constants.IdentityKey].(float64))
-
-	req := &user.MGetUserRequest{UserId: userID, ActionType: constants.QueryFollowList}
+	tokenId := vo.GetUserIdFromToken(c)
+	fmt.Println("tokenId:", tokenId)
+	toUserIDString := c.Query("user_id")
+	toUserID, err := strconv.ParseInt(toUserIDString, 10, 64)
+	req := &user.MGetUserRequest{UserId: tokenId, ToUserId: toUserID, ActionType: constants.QueryFollowList}
 	user, err := rpc.MGetUser(context.Background(), req)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
@@ -44,10 +46,12 @@ func GetFollowList(c *gin.Context) {
 
 // get follower list
 func GetFollowerList(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
-	userID := int64(claims[constants.IdentityKey].(float64))
+	tokenId := vo.GetUserIdFromToken(c)
+	fmt.Println("tokenId:", tokenId)
+	toUserIDString := c.Query("user_id")
+	toUserID, err := strconv.ParseInt(toUserIDString, 10, 64)
 
-	req := &user.MGetUserRequest{UserId: userID, ActionType: constants.QueryFollowerList}
+	req := &user.MGetUserRequest{UserId: tokenId, ToUserId: toUserID, ActionType: constants.QueryFollowerList}
 	user, err := rpc.MGetUser(context.Background(), req)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)

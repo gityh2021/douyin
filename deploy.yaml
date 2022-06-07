@@ -1,0 +1,117 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  labels:
+    app: user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: fduyh2021/user:v2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8087
+          resources:
+            requests:
+              cpu: 50m
+              memory: 100Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+spec:
+  ports:
+    - port: 8087
+      targetPort: 8087
+  selector:
+    app: user-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: video-service
+  labels:
+    app: video-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: video-service
+  template:
+    metadata:
+      labels:
+        app: video-service
+    spec:
+      containers:
+        - name: video-service
+          image: fduyh2021/video:v2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8088
+          resources:
+            requests:
+              cpu: 50m
+              memory: 100Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: video-service
+spec:
+  ports:
+    - port: 8088
+      targetPort: 8088
+  selector:
+    app: video-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-service
+  labels:
+    app: api-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-service
+  template:
+    metadata:
+      labels:
+        app: api-service
+    spec:
+      containers:
+        - name: video-service
+          image: fduyh2021/api:v2
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NETWORK_IP
+              value: "172.19.109.141"
+          ports:
+            - containerPort: 8082
+          resources:
+            requests:
+              cpu: 50m
+              memory: 100Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-service
+spec:
+  ports:
+    - port: 8082
+      targetPort: 8082
+  selector:
+    app: api-service
