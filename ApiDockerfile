@@ -4,6 +4,8 @@ ENV USER_PORT=8087 \
     API_PORT=8082
 RUN go env -w GO111MODULE="on"
 RUN go env -w GOPROXY=https://goproxy.cn,direct
+RUN sudo apt update
+RUN sudo apt install ffmpeg
 WORKDIR $GOPATH/douyin
 COPY . $GOPATH/douyin
 RUN go build ./cmd/api/
