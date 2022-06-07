@@ -31,10 +31,6 @@ func PublishVideo(c *gin.Context) {
 		SendCreateVideoResponse(c, err)
 		return
 	}
-	if err != nil {
-		SendCreateVideoResponse(c, err)
-		return
-	}
 	videoFilename := "video/" + strconv.FormatInt(userID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + filepath.Base(data.Filename)
 	if err := oss.PutFeed(data, videoFilename); err != nil {
 		SendCreateVideoResponse(c, err)
@@ -63,6 +59,7 @@ func PublishVideo(c *gin.Context) {
 	}
 	if err := rpc.CreateVideo(context.Background(), &newVideo); err != nil {
 		SendCreateVideoResponse(c, err)
+		return 
 	}
 	SendCreateVideoResponse(c, errno.Success)
 }
