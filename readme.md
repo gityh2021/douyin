@@ -1,7 +1,6 @@
-** 本项目是2022字节跳动后端青训营项目，具体的说明文档地址为：https://www.yuque.com/yanghong-kpkbj/gg6r7n/wiexpw
+**本项目是2022字节跳动后端青训营项目，具体的说明文档地址为：https://www.yuque.com/yanghong-kpkbj/gg6r7n/wiexpw**
  
- 注意，后面的内容只是开发过程中的记录，不作为最终说明文档。
-**
+**注意，后面的内容只是开发过程中的记录，不作为最终说明文档。**
 
 # user service
 
