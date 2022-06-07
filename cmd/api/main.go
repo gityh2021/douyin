@@ -24,6 +24,8 @@ func Init() {
 
 func main() {
 	Init()
+	go oss.ConsumeImg()
+	go oss.ConsumeVideo()
 	r := gin.Default()
 	authMiddleware, _ := myjwt.New(&myjwt.GinJWTMiddleware{
 		Key:        []byte(constants.SecretKey),

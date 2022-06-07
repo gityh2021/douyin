@@ -8,7 +8,6 @@ import (
 	"douyin/v1/kitex_gen/video"
 	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/errno"
-	"math/rand"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -32,13 +31,27 @@ func PublishVideo(c *gin.Context) {
 		return
 	}
 	videoFilename := "video/" + strconv.FormatInt(userID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + filepath.Base(data.Filename)
-	if err := oss.PutFeed(data, videoFilename); err != nil {
+	coverFileName := "cover/" + strconv.FormatInt(userID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + ".jpeg"
+	saveFile := filepath.Join("./cmd/api/static/", videoFilename)
+	if err := c.SaveUploadedFile(data, saveFile); err != nil {
 		SendCreateVideoResponse(c, err)
 		return
 	}
-	// 随机选择一张图片作为封面
-	rand.Seed(time.Now().Unix())
-	coverFileName := "cover/" + strconv.Itoa(rand.Intn(20)) + ".jpeg"
+	v := oss.VideoOss{
+		SourceFile: saveFile,
+		TargetFile: videoFilename,
+	}
+	oss.VideoList.Lock()
+	oss.VideoList.M = append(oss.VideoList.M, v)
+	oss.VideoList.Unlock()
+	i := oss.ImgOss{
+		VideoFile:  saveFile,
+		SourceFile: filepath.Join("./cmd/api/static/", coverFileName),
+		TargetFile: coverFileName,
+	}
+	oss.ImgList.Lock()
+	oss.ImgList.M = append(oss.ImgList.M, i)
+	oss.ImgList.Unlock()
 	newVideo := video.Video{
 		AuthorId:      userID,
 		PlayUrl:       constants.OSSFetchURL + videoFilename,
