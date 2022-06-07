@@ -38,6 +38,14 @@ func main() {
 			}
 			return myjwt.MapClaims{}
 		},
+		Unauthorized: func(c *gin.Context, code int, message string) {
+			c.JSON(code, gin.H{
+				"status_code":    int32(code),
+				"status_msg": message,
+				"user_id": 0,
+				"token": "",
+			})
+		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {
 			var loginVar1 handlers.UserParam
 			loginVar1.UserName = c.Query("username")
