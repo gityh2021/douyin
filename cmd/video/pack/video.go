@@ -5,6 +5,7 @@ import (
 	"douyin/v1/kitex_gen/video"
 )
 
+// Video 转换数据库的Video为服务的Video
 func Video(m *db.Video) *video.Video {
 	if m == nil {
 		return nil
@@ -21,6 +22,7 @@ func Video(m *db.Video) *video.Video {
 	}
 }
 
+// Videos 批量转换数据库的Video为服务的Video
 func Videos(ms []*db.Video) []*video.Video {
 	notes := make([]*video.Video, 0)
 	for _, m := range ms {
@@ -31,6 +33,7 @@ func Videos(ms []*db.Video) []*video.Video {
 	return notes
 }
 
+// Comment 转换数据库的Comment为服务的Comment
 func Comment(m *db.Comment) *video.Comment {
 	if m == nil {
 		return nil
@@ -44,6 +47,7 @@ func Comment(m *db.Comment) *video.Comment {
 	}
 }
 
+// Comments 批量转换数据库的Comment为服务的Comment
 func Comments(ms []*db.Comment) []*video.Comment {
 	notes := make([]*video.Comment, 0)
 	for _, m := range ms {

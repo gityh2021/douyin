@@ -12,10 +12,12 @@ type QueryVideoService struct {
 	ctx context.Context
 }
 
+// NewQueryVideoService 创建视频查询服务
 func NewQueryVideoService(ctx context.Context) *QueryVideoService {
 	return &QueryVideoService{ctx: ctx}
 }
 
+// GetPublishList 获取用户的作品列表
 func (s *QueryVideoService) GetPublishList(userId int64) ([]*video.Video, error) {
 	videos, err := db.MGetVideosByUserID(s.ctx, userId)
 	if err != nil {
@@ -31,6 +33,7 @@ func (s *QueryVideoService) GetPublishList(userId int64) ([]*video.Video, error)
 	return pack.Videos(newVideos), nil
 }
 
+// GetVideoFeed 获取用户最新的视频列表
 func (s *QueryVideoService) GetVideoFeed(lastTime int64, userId int64) ([]*video.Video, time.Time, error) {
 	videos, err := db.MGetVideosByTime(s.ctx, lastTime)
 	if err != nil {

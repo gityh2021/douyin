@@ -1,5 +1,6 @@
 package vo
 
+// Author 作者
 type Author struct {
 	ID            int64  `json:"id"`
 	Name          string `json:"name"`
@@ -8,6 +9,7 @@ type Author struct {
 	IsFollow      bool   `json:"is_follow"`
 }
 
+// VideoVo 视频
 type VideoVo struct {
 	ID            int64  `json:"id"`
 	Author        Author `json:"author"`

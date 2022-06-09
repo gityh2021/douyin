@@ -11,10 +11,12 @@ type CommentService struct {
 	ctx context.Context
 }
 
+// NewCommentService 创建视频服务
 func NewCommentService(ctx context.Context) *CommentService {
 	return &CommentService{ctx: ctx}
 }
 
+// PostComment 给一条视频添加评论
 func (s *CommentService) PostComment(comment *video.Comment) (*video.Comment, error) {
 	dbComment := db.Comment{
 		UserId:  comment.UserId,
@@ -28,6 +30,7 @@ func (s *CommentService) PostComment(comment *video.Comment) (*video.Comment, er
 	return pack.Comment(&dbComment), nil
 }
 
+// DeleteComment 删除一条评论
 func (s *CommentService) DeleteComment(commentId int64) error {
 	return db.MDeleteComment(s.ctx, commentId)
 }

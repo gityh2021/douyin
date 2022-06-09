@@ -19,7 +19,7 @@ type Video struct {
 	Title         string `json:"title"`
 }
 
-//根据Userid返回视频
+// MGetVideosByUserID 根据Userid返回视频
 func MGetVideosByUserID(ctx context.Context, userId int64) ([]*Video, error) {
 	res := make([]*Video, 0)
 	if err := DB.WithContext(ctx).Where("author_id = ?", userId).Find(&res).Error; err != nil {
@@ -28,7 +28,7 @@ func MGetVideosByUserID(ctx context.Context, userId int64) ([]*Video, error) {
 	return res, nil
 }
 
-//根据时间返回视频
+// MGetVideosByTime 根据时间返回视频
 func MGetVideosByTime(ctx context.Context, lastTime int64) ([]*Video, error) {
 	res := make([]*Video, 0)
 	if err := DB.WithContext(ctx).Where("created_at < ?", time.Unix(lastTime, 0).Format("2006-01-02 15:04:05")).Order("created_at desc").Limit(30).Find(&res).Error; err != nil {
@@ -37,7 +37,7 @@ func MGetVideosByTime(ctx context.Context, lastTime int64) ([]*Video, error) {
 	return res, nil
 }
 
-//发布视频
+// MPublishVideo 发布视频
 func MPublishVideo(ctx context.Context, video *Video) error {
 	return DB.WithContext(ctx).Create(&video).Error
 }

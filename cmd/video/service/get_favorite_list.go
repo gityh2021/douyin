@@ -11,10 +11,12 @@ type QueryFavoriteService struct {
 	ctx context.Context
 }
 
+// NewQueryFavoriteService 创建查询视频点赞服务
 func NewQueryFavoriteService(ctx context.Context) *QueryFavoriteService {
 	return &QueryFavoriteService{ctx: ctx}
 }
 
+// GetFavoriteListByUser 获取用户点赞的视频列表
 func (s *QueryFavoriteService) GetFavoriteListByUser(userId int64) ([]*video.Video, error) {
 	videos, err := db.MGetFavoriteList(s.ctx, userId)
 	if err != nil {
@@ -23,6 +25,7 @@ func (s *QueryFavoriteService) GetFavoriteListByUser(userId int64) ([]*video.Vid
 	return pack.Videos(videos), nil
 }
 
+// AppendFavorite 给一条视频点赞
 func (s *QueryFavoriteService) AppendFavorite(ms []*db.Video, userId int64) ([]*db.Video, error) {
 	if len(ms) == 0 {
 		return ms, nil

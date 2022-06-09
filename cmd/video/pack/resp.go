@@ -36,6 +36,7 @@ func BuildBaseResp(err error) *video.BaseResp {
 	return baseResp(s)
 }
 
+// baseResp get baseResp Struct
 func baseResp(err errno.ErrNo) *video.BaseResp {
 	return &video.BaseResp{StatusCode: err.ErrCode, StatusMsg: err.ErrMsg}
 }

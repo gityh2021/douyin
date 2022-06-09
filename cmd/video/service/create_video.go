@@ -10,9 +10,12 @@ type CreateVideoService struct {
 	ctx context.Context
 }
 
+// NewCreateVideoService 获取视频服务
 func NewCreateVideoService(ctx context.Context) *CreateVideoService {
 	return &CreateVideoService{ctx: ctx}
 }
+
+// CreateVideo 发布视频
 func (s *CreateVideoService) CreateVideo(video *video.Video) error {
 	return db.MPublishVideo(s.ctx, &db.Video{
 		AuthorID:      video.AuthorId,
