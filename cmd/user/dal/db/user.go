@@ -4,7 +4,6 @@ import (
 	"douyin/v1/kitex_gen/user"
 	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/errno"
-	"fmt"
 
 	"gorm.io/gorm"
 
@@ -24,25 +23,12 @@ func (u *User) TableName() string {
 	return constants.UserTableName
 }
 
-// CreateUser create user info
+// CreateUser 创建用户信息
 func CreateUser(ctx context.Context, users []*User) error {
 	return DB.WithContext(ctx).Create(users).Error
 }
 
-// // MGetUsers multiple get list of user info
-// func MGetUsers(ctx context.Context, userIDs []int64) ([]*User, error) {
-// 	res := make([]*User, 0)
-// 	if len(userIDs) == 0 {
-// 		return res, nil
-// 	}
-
-// 	if err := DB.WithContext(ctx).Where("id in ?", userIDs).Find(&res).Error; err != nil {
-// 		return nil, err
-// 	}
-// 	return res, nil
-// }
-
-// QueryUser query list of user info
+// QueryUser 通过username查询用户
 func QueryUser(ctx context.Context, userName string) ([]*User, error) {
 	res := make([]*User, 0)
 	if err := DB.WithContext(ctx).Where("user_name = ?", userName).Find(&res).Error; err != nil {
@@ -51,7 +37,7 @@ func QueryUser(ctx context.Context, userName string) ([]*User, error) {
 	return res, nil
 }
 
-// QueryUser query list of user info
+// QueryUser 通过userid查询用户
 func QueryUserById(ctx context.Context, userId int64) (User, error) {
 	res := User{}
 	if err := DB.WithContext(ctx).Where("id = ?", userId).First(&res).Error; err != nil {
@@ -60,40 +46,31 @@ func QueryUserById(ctx context.Context, userId int64) (User, error) {
 	return res, nil
 }
 
-// MGetUsers multiple get list of user info
+// MGetUsers 根据一个Userid获取其关注粉丝数量
 func MGetUsers(ctx context.Context, req *user.MGetUserRequest) ([]*User, error) {
 	res := make([]*User, 0)
-	fmt.Println(req.ToUserId)
 	if req.ToUserId < 1 || req.ActionType < constants.QueryUserInfo || req.ActionType > constants.QueryFollowerList {
 		return nil, errno.ParamErr
 	}
 	if req.ActionType == constants.QueryUserInfo {
-		// query user info
 		if err := DB.WithContext(ctx).Where("id = ?", req.ToUserId).Find(&res).Error; err != nil {
 			return nil, err
 		}
 		return res, nil
 	} else if req.ActionType == constants.QueryFollowList {
-		// query follow list
-		// step 1: query table follower
 		followIds, err := QueryFollowById(ctx, req.ToUserId)
 		if err != nil {
 			return nil, err
 		}
-		// step 2: query table user
 		if err = DB.WithContext(ctx).Where("id in ?", followIds).Find(&res).Error; err != nil {
 			return nil, err
 		}
 		return res, nil
 	} else {
-		// if req.ActionType == constants.QueryFollowerList
-		// query follower list
-		// step 1: query table follower
 		followerIds, err := QueryFollowerById(ctx, req.ToUserId)
 		if err != nil {
 			return nil, err
 		}
-		// step 2: query table user
 		if err = DB.WithContext(ctx).Where("id in ?", followerIds).Find(&res).Error; err != nil {
 			return nil, err
 		}
@@ -101,6 +78,7 @@ func MGetUsers(ctx context.Context, req *user.MGetUserRequest) ([]*User, error) 
 	}
 }
 
+//QueryFollowRelation 查询是否关注了userId对应的用户
 func QueryFollowRelation(ctx context.Context, users []*User, userId int64) ([]bool, error) {
 	isFollowList := make([]bool, len(users))
 	if userId == constants.NotLogin {
@@ -121,6 +99,7 @@ func QueryFollowRelation(ctx context.Context, users []*User, userId int64) ([]bo
 	return isFollowList, nil
 }
 
+//GetUserInfoList 根据userIDs获取用户信息列表
 func GetUserInfoList(ctx context.Context, userIDs []int64) ([]*User, error) {
 	var res []*User
 	if len(userIDs) == 0 {
@@ -133,6 +112,7 @@ func GetUserInfoList(ctx context.Context, userIDs []int64) ([]*User, error) {
 	return res, nil
 }
 
+//UpdateUser 关注或者取关后进行的数据库操作
 func UpdateUser(ctx context.Context, req *user.UpdateUserRequest) error {
 	if req.UserId == constants.NotLogin {
 		return nil

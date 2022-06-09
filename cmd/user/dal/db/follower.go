@@ -18,6 +18,7 @@ func (u *Follower) TableName() string {
 	return constants.FollowerTableName
 }
 
+//QueryFollowById 根据ID查询关注列表
 func QueryFollowById(ctx context.Context, userId int64) ([]*int64, error) {
 	res := make([]*Follower, 0)
 	if err := DB.WithContext(ctx).Where("follower_id = ?", userId).Find(&res).Error; err != nil {
@@ -30,6 +31,7 @@ func QueryFollowById(ctx context.Context, userId int64) ([]*int64, error) {
 	return followIds, nil
 }
 
+//QueryFollowerById 根据ID查询粉丝列表
 func QueryFollowerById(ctx context.Context, userId int64) ([]*int64, error) {
 	res := make([]*Follower, 0)
 	if err := DB.WithContext(ctx).Where("user_id = ?", userId).Find(&res).Error; err != nil {
