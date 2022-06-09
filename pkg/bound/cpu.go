@@ -46,6 +46,7 @@ func (c *cpuLimitHandler) OnMessage(ctx context.Context, args, result remote.Mes
 	return ctx, nil
 }
 
+// cpuPercent: 获取当前cpu使用率
 func cpuPercent() float64 {
 	percent, _ := cpu.Percent(0, false)
 	return percent[0]

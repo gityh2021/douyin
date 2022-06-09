@@ -4,16 +4,12 @@ const (
 	// 数据库相关常量
 	UserTableName     = "user"
 	FollowerTableName = "follower"
-	//MySQLDefaultDSN   = "root:Yang75769933@tcp(139.224.195.12:3305)/douyin?parseTime=True&loc=Local"
-	MySQLDefaultDSN = "root:root@tcp(139.224.195.12:33065)/douyin?parseTime=True&loc=Local&charset=utf8"
-	MySQLReplicaDSN = "root:root@tcp(139.224.195.12:33066)/douyin?parseTime=True&loc=Local&charset=utf8"
+	MySQLDefaultDSN   = "root:root@tcp(139.224.195.12:33065)/douyin?parseTime=True&loc=Local&charset=utf8"
+	MySQLReplicaDSN   = "root:root@tcp(139.224.195.12:33066)/douyin?parseTime=True&loc=Local&charset=utf8"
 	// JWT相关常量
 	SecretKey   = "secret key"
 	IdentityKey = "id"
-	// Total       = "total"
-	// Notes       = "notes"
-	// NoteID      = "note_id"
-	// 服务相关常量
+	// 微服务相关常量
 	ApiServiceName            = "api"
 	VideoServiceName          = "video"
 	UserServiceName           = "user"
@@ -33,20 +29,3 @@ const (
 	BucketName      = "dousheng11"
 	OSSFetchURL     = "https://" + BucketName + ".oss-cn-hangzhou.aliyuncs.com/"
 )
-
-// const (
-// 	NoteTableName           = "note"
-// 	UserTableName           = "user"
-// 	SecretKey               = "secret key"
-// 	IdentityKey             = "id"
-// 	Total                   = "total"
-// 	Notes                   = "notes"
-// 	NoteID                  = "note_id"
-// 	ApiServiceName          = "api"
-// 	NoteServiceName         = "note"
-// 	UserServiceName         = "user"
-// 	MySQLDefaultDSN         = "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local"
-// 	EtcdAddress             = "127.0.0.1:2379"
-// 	CPURateLimit    float64 = 80.0
-// 	DefaultLimit            = 10
-// )

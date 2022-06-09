@@ -303,8 +303,6 @@ func (mw *GinJWTMiddleware) usingPublicKeyAlgo() bool {
 // MiddlewareInit initialize jwt configs.
 func (mw *GinJWTMiddleware) MiddlewareInit() error {
 
-	//fmt.Println("MYJWY INIT...........")
-
 	if mw.TokenLookup == "" {
 		mw.TokenLookup = "header:Authorization"
 	}
@@ -312,8 +310,6 @@ func (mw *GinJWTMiddleware) MiddlewareInit() error {
 	if mw.FilteredURL == "" {
 		mw.FilteredURL = "/douyin/test"
 	}
-
-	//fmt.Printf("mw.FilterURL: %v\n", mw.FilteredURL)
 
 	if mw.SigningAlgorithm == "" {
 		mw.SigningAlgorithm = "HS256"
@@ -428,38 +424,23 @@ func (mw *GinJWTMiddleware) MiddlewareFunc() gin.HandlerFunc {
 
 func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 	claims, err := mw.GetClaimsFromJWT(c)
-	//fmt.Printf("claims: %v\n", claims)
-	// arse FilteredURL
+	// parse FilteredURL
 	FilteredURLs := strings.Split(mw.FilteredURL, ",")
-	//fmt.Printf("FilteredURLs: %v\n", FilteredURLs)
-	//fmt.Println("c.Request.URL.Path: ", c.Request.URL.Path)
 	flag := false
 	for _, FilteredURL := range FilteredURLs {
-		//fmt.Println("FilteredURL: ", FilteredURL)
 		FilteredURL = strings.TrimSpace(FilteredURL)
 		if strings.HasPrefix(c.Request.URL.Path, FilteredURL) {
-			//fmt.Printf("FilteredURL: %v\n", FilteredURL)
 			flag = true
 			break
 		}
 	}
 	if err != nil {
-		//fmt.Printf("err: %#v\n", err)
-		//fmt.Printf("err: %v\n", err)
-		//fmt.Printf("err.Error(): %v\n", err.Error())
-		// fmt.Printf("c.Request.URL: %v\n", c.Request.URL) // /douyin/user/
-		// 可能是过期了,过期我们就返回过期的错误
-		// if err.Error() == "Token is expired" {
-		// 	mw.unauthorized(c, http.StatusUnauthorized, mw.HTTPStatusMessageFunc(err, c))
-		// 	return
-		// }
 		// 非空的token,可以认为攻击者在尝试攻击,或者是过期了
 		if err.Error() != "form post token is empty" {
 			mw.unauthorized(c, http.StatusUnauthorized, mw.HTTPStatusMessageFunc(err, c))
 			return
 		}
 		// 空的token,过滤掉不需要验证token的url
-		//fmt.Println(",,,,,,,,,空的token!")
 		if !flag {
 			mw.unauthorized(c, http.StatusUnauthorized, mw.HTTPStatusMessageFunc(err, c))
 			return
@@ -468,7 +449,6 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 
 	if claims["exp"] == nil {
 		// 过滤掉不需要验证token的url
-		//fmt.Println(",,,,,,,,,claims[exp] == nil!")
 		if !flag {
 			mw.unauthorized(c, http.StatusBadRequest, mw.HTTPStatusMessageFunc(ErrMissingExpField, c))
 			return
@@ -477,7 +457,6 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 
 	if _, ok := claims["exp"].(float64); !ok {
 		// 过滤掉不需要验证token的url
-		//fmt.Println(",,,,,,,,,claims[exp] != float64!")
 		if !flag {
 			mw.unauthorized(c, http.StatusBadRequest, mw.HTTPStatusMessageFunc(ErrWrongFormatOfExp, c))
 			return
@@ -486,7 +465,6 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 
 	if claims["exp"] != nil {
 		if int64(claims["exp"].(float64)) < mw.TimeFunc().Unix() {
-			//fmt.Println(",,,,,,,,,claims[exp] < mw.TimeFunc().Unix()!")
 			// 如果在最上面解析时没过期,处理到这里过期了,这样就能正常返回token过期的错误
 			mw.unauthorized(c, http.StatusUnauthorized, mw.HTTPStatusMessageFunc(ErrExpiredToken, c))
 			return
@@ -494,9 +472,7 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 		}
 	}
 
-	//fmt.Println("before set")
 	c.Set("JWT_PAYLOAD", claims)
-	//fmt.Println("after set")
 	identity := mw.IdentityHandler(c)
 
 	if identity != nil {
@@ -510,8 +486,6 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 			return
 		}
 	}
-
-	//fmt.Printf("claims: %v\n", claims)
 
 	c.Next()
 }
@@ -796,7 +770,6 @@ func (mw *GinJWTMiddleware) ParseToken(c *gin.Context) (*jwt.Token, error) {
 
 	methods := strings.Split(mw.TokenLookup, ",")
 	// 根据我们项目的特殊性,可以从postform中拿token
-	//methods = append(methods, "postform:token")
 	for _, method := range methods {
 		if len(token) > 0 {
 			break
@@ -804,8 +777,7 @@ func (mw *GinJWTMiddleware) ParseToken(c *gin.Context) (*jwt.Token, error) {
 		parts := strings.Split(strings.TrimSpace(method), ":")
 		k := strings.TrimSpace(parts[0])
 		v := strings.TrimSpace(parts[1])
-		//fmt.Printf("k: %v\n", k)
-		//fmt.Printf("v: %v\n", v)
+
 		switch k {
 		case "header":
 			token, err = mw.jwtFromHeader(c, v)

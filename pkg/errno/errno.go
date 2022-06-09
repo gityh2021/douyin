@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// 错误码
 const (
 	SuccessCode             = 0
 	ServiceErrCode          = 10001
@@ -35,6 +36,7 @@ func (e ErrNo) WithMessage(msg string) ErrNo {
 	return e
 }
 
+// 错误信息描述
 var (
 	Success             = NewErrNo(SuccessCode, "Success")
 	IdNotEqualErr       = NewErrNo(IdNotEqualErrCode, "two user ids are not equal")
