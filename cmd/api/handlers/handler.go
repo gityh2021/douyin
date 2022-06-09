@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//定义回复消息中json的格式
+
 type BaseResponse struct {
 	Code    int32  `json:"status_code"`
 	Message string `json:"status_msg"`
@@ -40,6 +42,11 @@ type UserListResponse struct {
 	Code     int32       `json:"status_code"`
 	Message  string      `json:"status_msg"`
 	UserList interface{} `json:"user_list"`
+}
+
+type UserParam struct {
+	UserName string `json:"username"`
+	PassWord string `json:"password"`
 }
 
 // SendResponse pack response
@@ -87,17 +94,35 @@ func SendUserListResponse(c *gin.Context, err error, userList []*user.User) {
 	})
 }
 
-type UserParam struct {
-	UserName string `json:"username"`
-	PassWord string `json:"password"`
-}
-
 // video ----------------------------------------------------------
+type CreateVideoResponse struct {
+	Code    int32  `json:"status_code"`
+	Message string `json:"status_msg"`
+}
 
 type QueryByVideoList struct {
 	Code    int32       `json:"status_code"`
 	Message string      `json:"status_msg"`
 	Data    interface{} `json:"video_list"`
+}
+
+type QueryByLastTimeResponse struct {
+	Code     int32       `json:"status_code"`
+	Message  string      `json:"status_msg"`
+	NextTime int64       `json:"next_time"`
+	Data     interface{} `json:"video_list"`
+}
+
+type PostCommentResponse struct {
+	Code    int32       `json:"status_code"`
+	Message string      `json:"status_msg"`
+	Data    interface{} `json:"comment"`
+}
+
+type QueryCommentResponse struct {
+	Code    int32       `json:"status_code"`
+	Message string      `json:"status_msg"`
+	Data    interface{} `json:"comment_list"`
 }
 
 func SendQueryByVideoList(c *gin.Context, err error, data interface{}) {
@@ -107,13 +132,6 @@ func SendQueryByVideoList(c *gin.Context, err error, data interface{}) {
 		Message: Err.ErrMsg,
 		Data:    data,
 	})
-}
-
-type QueryByLastTimeResponse struct {
-	Code     int32       `json:"status_code"`
-	Message  string      `json:"status_msg"`
-	NextTime int64       `json:"next_time"`
-	Data     interface{} `json:"video_list"`
 }
 
 func SendQueryByLastTimeResponse(c *gin.Context, err error, data interface{}, nextTime int64) {
@@ -126,23 +144,12 @@ func SendQueryByLastTimeResponse(c *gin.Context, err error, data interface{}, ne
 	})
 }
 
-type CreateVideoResponse struct {
-	Code    int32  `json:"status_code"`
-	Message string `json:"status_msg"`
-}
-
 func SendCreateVideoResponse(c *gin.Context, err error) {
 	Err := errno.ConvertErr(err)
 	c.JSON(http.StatusOK, CreateVideoResponse{
 		Code:    Err.ErrCode,
 		Message: Err.ErrMsg,
 	})
-}
-
-type PostCommentResponse struct {
-	Code    int32       `json:"status_code"`
-	Message string      `json:"status_msg"`
-	Data    interface{} `json:"comment"`
 }
 
 func SendPostCommentResponse(c *gin.Context, data interface{}, err error) {
@@ -152,12 +159,6 @@ func SendPostCommentResponse(c *gin.Context, data interface{}, err error) {
 		Message: Err.ErrMsg,
 		Data:    data,
 	})
-}
-
-type QueryCommentResponse struct {
-	Code    int32       `json:"status_code"`
-	Message string      `json:"status_msg"`
-	Data    interface{} `json:"comment_list"`
 }
 
 func SendQueryCommentResponse(c *gin.Context, data interface{}, err error) {

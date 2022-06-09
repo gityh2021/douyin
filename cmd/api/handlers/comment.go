@@ -6,10 +6,12 @@ import (
 	"douyin/v1/kitex_gen/video"
 	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/errno"
-	"github.com/gin-gonic/gin"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
+//PostComment 发表评论
 func PostComment(c *gin.Context) {
 	token := c.Query("token")
 	videoIdStr := c.Query("video_id")
@@ -76,18 +78,16 @@ func PostComment(c *gin.Context) {
 	SendPostCommentResponse(c, resp.Comment, errno.Success)
 }
 
+//QueryComments 获取某个视频的评论列表
 func QueryComments(c *gin.Context) {
 	tokenId := vo.GetUserIdFromToken(c)
-	//tokenStr := c.Query("token")
+
 	videoIdStr := c.Query("video_id")
 	if videoIdStr == "" {
 		SendQueryCommentResponse(c, nil, errno.ParamErr)
 		return
 	}
-	//if tokenId == -1 {
-	//	SendQueryCommentResponse(c, nil, errno.LoginErr)
-	//	return
-	//}
+
 	videoId, err := strconv.ParseInt(videoIdStr, 10, 64)
 	if err != nil {
 		SendQueryCommentResponse(c, nil, err)

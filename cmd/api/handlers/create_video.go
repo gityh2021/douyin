@@ -15,6 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//PublishVideo 发布视频
 func PublishVideo(c *gin.Context) {
 	userID := vo.GetUserIdFromToken(c)
 	titleStr := c.PostForm("title")

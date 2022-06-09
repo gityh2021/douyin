@@ -13,10 +13,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetUserInfo 获取用户信息
 func GetUserInfo(c *gin.Context) {
 	claims := myjwt.ExtractClaims(c)
-	// fmt.Printf("claims: %v\n", claims)
-	// fmt.Printf("claims[constants.IdentityKey]: %v\n", claims[constants.IdentityKey])
 	userID := int64(claims[constants.IdentityKey].(float64))
 
 	req := &user.InfoGetUserRequest{UserId: userID}

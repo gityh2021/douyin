@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//FollowAction 对某用户进行关注操作
 func FollowAction(c *gin.Context) {
 	claims := myjwt.ExtractClaims(c)
 	userID := int64(claims[constants.IdentityKey].(float64))

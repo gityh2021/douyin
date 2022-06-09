@@ -5,13 +5,13 @@ import (
 	"douyin/v1/cmd/api/rpc"
 	"douyin/v1/cmd/api/vo"
 	"douyin/v1/pkg/errno"
-	"fmt"
 	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
+//GetPublishVideoList 获取发布视频列表
 func GetPublishVideoList(c *gin.Context) {
 	userIdFromToken := vo.GetUserIdFromToken(c)
 	userIdStr := c.Query("user_id")
@@ -20,17 +20,6 @@ func GetPublishVideoList(c *gin.Context) {
 		return
 	}
 	userIdFromQuery, err := strconv.ParseInt(userIdStr, 10, 64)
-	//if userIdStr != "" {
-	//	userIdFromQuery, err := strconv.ParseInt(userIdStr, 10, 64)
-	//	if err != nil {
-	//		SendQueryByVideoList(c, errno.ParamErr, nil)
-	//		return
-	//	}
-	//	if userIdFromQuery != userIdFromToken {
-	//		SendQueryByVideoList(c, errno.IdNotEqualErr, nil)
-	//		return
-	//	}
-	//}
 	videos, err := rpc.GetPublishVideoList(context.Background(), userIdFromQuery)
 	if err != nil {
 		SendQueryByVideoList(c, errno.ConvertErr(err), nil)
@@ -60,10 +49,6 @@ func GetVideoFeed(c *gin.Context) {
 	userIdFromToken := vo.GetUserIdFromToken(c)
 	lastTimeStr := c.Query("latest_time")
 	lastTime := time.Now().Unix()
-	fmt.Printf("userIdFromToken: %v\n", userIdFromToken)
-	fmt.Printf("lastTimeStr: %v\n", lastTimeStr)
-	fmt.Printf("lastTime: %v\n", lastTime)
-	// c.JSON(200, "ok")
 	if lastTimeStr != "" {
 		t, err := strconv.ParseInt(lastTimeStr, 10, 64)
 		if err != nil {
