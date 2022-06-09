@@ -22,7 +22,7 @@ func NewCheckUserService(ctx context.Context) *CheckUserService {
 	}
 }
 
-// CheckUser check user info
+// CheckUser 检查用户名与密码并创建一个新用户。
 func (s *CheckUserService) CheckUser(req *user.CheckUserRequest) (int64, error) {
 	h := md5.New()
 	if _, err := io.WriteString(h, req.Password); err != nil {

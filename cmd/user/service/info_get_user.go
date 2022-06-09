@@ -19,15 +19,15 @@ func NewInfoGetUserService(ctx context.Context) *InfoGetUserService {
 	}
 }
 
-// InfoGetUser info get user
+// InfoGetUser 根据用户ID查询登录用户相关信息。
 func (s *InfoGetUserService) InfoGetUser(req *user.InfoGetUserRequest) (*db.User, error) {
 	userId := req.UserId
-	user, err := db.QueryUserById(s.ctx, userId)
+	userinfo, err := db.QueryUserById(s.ctx, userId)
 	if err != nil {
 		return nil, err
 	}
-	if user.ID < 1 {
+	if userinfo.ID < 1 {
 		return nil, errno.UserNotExistErr
 	}
-	return &user, nil
+	return &userinfo, nil
 }

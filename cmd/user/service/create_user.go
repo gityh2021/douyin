@@ -20,7 +20,7 @@ func NewCreateUserService(ctx context.Context) *CreateUserService {
 	return &CreateUserService{ctx: ctx}
 }
 
-// CreateUser create user info.
+// CreateUser 检查用户名与密码并登录。
 func (s *CreateUserService) CreateUser(req *user.CreateUserRequest) error {
 	users, err := db.QueryUser(s.ctx, req.Username)
 	if err != nil {

@@ -25,6 +25,3 @@ func BuildBaseResp(err error) *user.BaseResp {
 func baseResp(err errno.ErrNo) *user.BaseResp {
 	return &user.BaseResp{StatusCode: err.ErrCode, StatusMsg: err.ErrMsg}
 }
-
-// BuildCommonResp build commonResp from error
-// func BuildCommonResp(err error) *user.BaseResp {}
