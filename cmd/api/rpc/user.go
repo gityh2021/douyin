@@ -2,8 +2,9 @@ package rpc
 
 import (
 	"context"
-	etcd "github.com/kitex-contrib/registry-etcd"
 	"time"
+
+	etcd "github.com/kitex-contrib/registry-etcd"
 
 	"douyin/v1/kitex_gen/user"
 	"douyin/v1/kitex_gen/user/userservice"
@@ -17,6 +18,7 @@ import (
 
 var userClient userservice.Client
 
+//initUserRpc 初始化user的rpc服务
 func initUserRpc() {
 	r, err := etcd.NewEtcdResolver([]string{constants.EtcdAddress})
 	if err != nil {

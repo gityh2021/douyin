@@ -15,6 +15,7 @@ import (
 
 var videoClient videoservice.Client
 
+//initVideoRpc 初始化video的Rpc服务
 func initVideoRpc() {
 	r, err := etcd.NewEtcdResolver([]string{constants.EtcdAddress})
 	if err != nil {
