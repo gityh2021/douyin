@@ -7,8 +7,9 @@ import (
 	"douyin/v1/kitex_gen/video"
 	"douyin/v1/pkg/constants"
 	"douyin/v1/pkg/errno"
-	"github.com/gin-gonic/gin"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type FavoriteActionParam struct {
@@ -18,6 +19,7 @@ type FavoriteActionParam struct {
 	ActionType int64  `json:"action_type"`
 }
 
+// FavoriteByUser 对某视频进行点赞操作
 func FavoriteByUser(c *gin.Context) {
 	tokenId := vo.GetUserIdFromToken(c)
 	videoIdStr := c.Query("video_id")

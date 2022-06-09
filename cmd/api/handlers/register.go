@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Register 登陆路径调用的函数
 func Register(c *gin.Context) {
 	var registerVar UserParam
 	registerVar.UserName = c.Query("username")
@@ -19,7 +20,7 @@ func Register(c *gin.Context) {
 		SendResponse(c, errno.ParamErr, nil)
 		return
 	}
-	// kong context
+
 	err := rpc.CreateUser(context.Background(), &user.CreateUserRequest{
 		Username: registerVar.UserName,
 		Password: registerVar.PassWord,
@@ -28,6 +29,4 @@ func Register(c *gin.Context) {
 		SendResponse(c, errno.ConvertErr(err), nil)
 		return
 	}
-	// auto login
-	// authMiddleware.LoginHandler(c)
 }
