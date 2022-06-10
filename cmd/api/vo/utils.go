@@ -8,12 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// PackVideoVos 将User列表与Video列表整合成VideoVo列表给前端
 func PackVideoVos(users []*user.User, videos []*video.Video) []*VideoVo {
+	// User列表可能重复，转化成map处理
 	userDict := make(map[int64]*user.User)
 	for i := 0; i < len(users); i++ {
 		userDict[users[i].GetId()] = users[i]
 	}
 	videoVos := make([]*VideoVo, len(videos))
+	// 将User信息根据Video的Author ID聚合成VideoVo
 	for i := 0; i < len(videos); i++ {
 		videoVo := VideoVo{
 			ID: videos[i].Id,
@@ -36,6 +39,7 @@ func PackVideoVos(users []*user.User, videos []*video.Video) []*VideoVo {
 	return videoVos
 }
 
+// PackCommentVos 将User列表与Comment列表整合成CommentVo列表给前端
 func PackCommentVos(users []*user.User, comments []*video.Comment) []*CommentVo {
 	userDict := make(map[int64]*user.User)
 	for i := 0; i < len(users); i++ {
@@ -60,6 +64,7 @@ func PackCommentVos(users []*user.User, comments []*video.Comment) []*CommentVo 
 	return commentVos
 }
 
+// GetUserIdFromToken 从token中获取UserId，UserId不存在则返回-1
 func GetUserIdFromToken(c *gin.Context) int64 {
 	claims := myjwt.ExtractClaims(c)
 	if claims[constants.IdentityKey] == nil {
